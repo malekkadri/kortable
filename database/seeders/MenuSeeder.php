@@ -13,6 +13,7 @@ class MenuSeeder extends Seeder
     {
         $home = Page::where('slug', 'home')->first();
         $about = Page::where('slug', 'about')->first();
+        $contact = Page::where('slug', 'contact')->first();
 
         $header = Menu::updateOrCreate(['location' => 'header'], ['name' => 'Header Menu', 'is_active' => true]);
         $footer = Menu::updateOrCreate(['location' => 'footer'], ['name' => 'Footer Menu', 'is_active' => true]);
@@ -39,7 +40,7 @@ class MenuSeeder extends Seeder
 
         MenuItem::updateOrCreate(
             ['menu_id' => $footer->id, 'sort_order' => 2],
-            ['label' => ['fr' => 'Contact', 'ar' => 'اتصل بنا', 'en' => 'Contact'], 'type' => 'custom', 'custom_url' => '/contact', 'is_active' => true]
+            ['label' => ['fr' => 'Contact', 'ar' => 'اتصل بنا', 'en' => 'Contact'], 'type' => 'page', 'linked_page_id' => $contact?->id, 'is_active' => true]
         );
     }
 }

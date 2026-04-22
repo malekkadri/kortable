@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class MenuItem extends Model
 {
@@ -46,4 +47,22 @@ class MenuItem extends Model
     {
         return $this->belongsTo(Page::class, 'linked_page_id');
     }
+
+    public function resolveUrl(string $locale): ?string
+    {
+        if ($this->type === 'page' && $this->page) {
+            $localizedSlug = $this->page->slug_translations[$locale] ?? $this->page->slug;
+
+            return route('front.pages.show', ['locale' => $locale, 'slug' => $localizedSlug]);
+        }
+
+        if (empty($this->custom_url)) {
+            return null;
+        }
+
+        return Str::startsWith($this->custom_url, ['http://', 'https://'])
+            ? $this->custom_url
+            : url($this->custom_url);
+    }
+
 }

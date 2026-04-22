@@ -7,6 +7,8 @@ return [
     'settings' => 'Paramètres',
     'modules' => 'Modules',
     'planned_modules' => 'Modules prévus',
+    'services' => 'Services',
+    'testimonials' => 'Témoignages',
     'logout' => 'Déconnexion',
     'site_settings' => 'Paramètres du site',
     'site_name' => 'Nom du site',
