@@ -18,5 +18,14 @@ class AdminUserSeeder extends Seeder
                 'is_admin' => true,
             ]
         );
+
+        User::updateOrCreate(
+            ['email' => 'editor@kortable.test'],
+            [
+                'name' => 'Kortable Editor',
+                'password' => Hash::make('password'),
+                'is_admin' => false,
+            ]
+        );
     }
 }
