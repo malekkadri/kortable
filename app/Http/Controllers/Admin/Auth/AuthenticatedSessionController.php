@@ -27,7 +27,9 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        if (! $request->user()?->is_admin) {
+        $user = $request->user();
+
+        if (! $user?->is_admin) {
             Auth::logout();
 
             return back()->withErrors([
