@@ -9,7 +9,7 @@
                 {!! nl2br(e($page->getLocalized('body', app()->getLocale()))) !!}
             </div>
         @else
-            <p class="text-slate-600">{{ config('app.name') }}</p>
+            <p class="text-slate-600">{{ __('ui.no_content_available') }}</p>
         @endif
     </section>
 @endsection

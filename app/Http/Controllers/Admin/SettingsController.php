@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UpdateSiteSettingsRequest;
 use App\Services\SettingService;
+use App\Support\Localization\Locale;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 
@@ -12,17 +13,18 @@ class SettingsController extends Controller
 {
     public function edit(SettingService $settingService): View
     {
+        $siteName = [];
+        $homepageHeadline = [];
+
+        foreach (Locale::all() as $locale) {
+            $siteName[$locale] = $settingService->get('site_name', $locale, config('app.name'));
+            $homepageHeadline[$locale] = $settingService->get('homepage_headline', $locale, __('messages.default_headline', locale: $locale));
+        }
+
         return view('admin.settings.edit', [
-            'siteName' => [
-                'fr' => $settingService->get('site_name', 'fr', 'Kortable'),
-                'ar' => $settingService->get('site_name', 'ar', 'كورتابل'),
-                'en' => $settingService->get('site_name', 'en', 'Kortable'),
-            ],
-            'homepageHeadline' => [
-                'fr' => $settingService->get('homepage_headline', 'fr', 'Bienvenue sur Kortable'),
-                'ar' => $settingService->get('homepage_headline', 'ar', 'مرحبًا بكم في كورتابل'),
-                'en' => $settingService->get('homepage_headline', 'en', 'Welcome to Kortable'),
-            ],
+            'locales' => Locale::all(),
+            'siteName' => $siteName,
+            'homepageHeadline' => $homepageHeadline,
         ]);
     }
 

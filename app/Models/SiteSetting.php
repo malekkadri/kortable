@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasTranslatableAttributes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class SiteSetting extends Model
 {
     use HasFactory;
+    use HasTranslatableAttributes;
 
     protected $fillable = [
         'site_name',
@@ -32,9 +34,6 @@ class SiteSetting extends Model
 
     public function getLocalized(string $field, ?string $locale = null): ?string
     {
-        $locale ??= app()->getLocale();
-        $value = $this->{$field} ?? [];
-
-        return $value[$locale] ?? $value[config('app.fallback_locale')] ?? null;
+        return $this->getTranslated($field, $locale);
     }
 }

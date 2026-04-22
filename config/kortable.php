@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'default_locale' => 'fr',
+
     'locales' => ['fr', 'ar', 'en'],
 
     'rtl_locales' => ['ar'],
