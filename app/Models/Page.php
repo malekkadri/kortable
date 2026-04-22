@@ -22,6 +22,7 @@ class Page extends Model
         'featured_image',
         'is_active',
         'template',
+        'sort_order',
         'seo',
         'published_at',
     ];

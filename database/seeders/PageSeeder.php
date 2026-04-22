@@ -15,6 +15,7 @@ class PageSeeder extends Seeder
                 'status' => 'published',
                 'is_active' => true,
                 'template' => 'home',
+                'sort_order' => 1,
                 'slug_translations' => [
                     'fr' => 'accueil',
                     'ar' => 'home',
@@ -63,6 +64,7 @@ class PageSeeder extends Seeder
                 'status' => 'published',
                 'is_active' => true,
                 'template' => 'default',
+                'sort_order' => 2,
                 'slug_translations' => [
                     'fr' => 'a-propos',
                     'ar' => 'about',
