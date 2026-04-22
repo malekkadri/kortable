@@ -18,6 +18,7 @@ class UpdateSiteSettingRequest extends FormRequest
             'default_locale' => ['required', 'in:'.implode(',', Locale::all())],
             'contact_email' => ['nullable', 'email'],
             'phone' => ['nullable', 'string', 'max:50'],
+            'map_embed_url' => ['nullable', 'url', 'max:2048'],
             'logo' => ['nullable', 'image', 'max:2048'],
             'favicon' => ['nullable', 'image', 'max:1024'],
             'social_links' => ['nullable', 'array'],

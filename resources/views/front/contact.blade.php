@@ -28,6 +28,7 @@
                     <label for="company_website">Company website</label>
                     <input id="company_website" name="company_website" type="text" tabindex="-1" autocomplete="off">
                 </div>
+                <input type="hidden" name="submitted_at" value="{{ now()->timestamp }}">
 
                 <div class="grid md:grid-cols-2 gap-4">
                     <div>
@@ -45,9 +46,9 @@
                 <div class="grid md:grid-cols-2 gap-4">
                     <div>
                         <label for="phone" class="block text-sm mb-1">{{ __('ui.phone') }}</label>
-                        <input id="phone" name="phone" value="{{ old('phone') }}" class="w-full border rounded px-3 py-2">
-                        @error('phone')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
-                    </div>
+                    <input id="phone" name="phone" value="{{ old('phone') }}" class="w-full border rounded px-3 py-2">
+                    @error('phone')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
+                </div>
                     <div>
                         <label for="subject" class="block text-sm mb-1">{{ __('ui.subject') }}</label>
                         <input id="subject" name="subject" value="{{ old('subject') }}" required class="w-full border rounded px-3 py-2">
@@ -60,6 +61,7 @@
                     <textarea id="message" name="message" rows="6" required class="w-full border rounded px-3 py-2">{{ old('message') }}</textarea>
                     @error('message')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
                 </div>
+                @error('submitted_at')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
 
                 <button class="px-4 py-2 bg-slate-900 text-white rounded">{{ __('ui.send_message') }}</button>
             </form>

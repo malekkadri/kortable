@@ -26,6 +26,7 @@ class ContactWorkflowTest extends TestCase
             'subject' => 'Portfolio inquiry',
             'message' => 'Hello, I need a redesign.',
             'company_website' => '',
+            'submitted_at' => now()->subSeconds(5)->timestamp,
         ];
 
         $this->post('/en/contact', $payload)
@@ -48,7 +49,22 @@ class ContactWorkflowTest extends TestCase
             'subject' => 'Spam',
             'message' => 'Spam content',
             'company_website' => 'https://spam.test',
+            'submitted_at' => now()->subSeconds(5)->timestamp,
         ])->assertSessionHasErrors('company_website');
+
+        $this->assertDatabaseCount('contact_messages', 0);
+    }
+
+    public function test_submissions_that_are_too_fast_are_rejected_as_spam(): void
+    {
+        $this->post('/en/contact', [
+            'name' => 'Fast Bot',
+            'email' => 'fast@example.com',
+            'subject' => 'Spam',
+            'message' => 'Spam content',
+            'company_website' => '',
+            'submitted_at' => now()->timestamp,
+        ])->assertSessionHasErrors('submitted_at');
 
         $this->assertDatabaseCount('contact_messages', 0);
     }
