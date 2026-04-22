@@ -13,21 +13,85 @@ class PageSeeder extends Seeder
             ['slug' => 'home'],
             [
                 'status' => 'published',
+                'is_active' => true,
+                'template' => 'home',
+                'slug_translations' => [
+                    'fr' => 'accueil',
+                    'ar' => 'home',
+                    'en' => 'home',
+                ],
                 'title' => [
                     'fr' => 'Accueil',
                     'ar' => 'الرئيسية',
                     'en' => 'Home',
                 ],
                 'excerpt' => [
-                    'fr' => 'Contenu piloté depuis l’administration.',
-                    'ar' => 'محتوى ديناميكي تتم إدارته من لوحة الإدارة.',
-                    'en' => 'Dynamic content managed from the admin panel.',
+                    'fr' => 'Agence digitale pour portfolios modernes et rapides.',
+                    'ar' => 'وكالة رقمية لبناء بورتفوليو عصري وسريع.',
+                    'en' => 'Digital studio building modern, high-performance portfolios.',
+                ],
+                'content' => [
+                    'fr' => "Nous transformons les idées en expériences web mesurables.",
+                    'ar' => 'نحوّل الأفكار إلى تجارب ويب قابلة للقياس.',
+                    'en' => 'We turn ideas into measurable web experiences.',
                 ],
                 'body' => [
-                    'fr' => 'Cette section est un exemple de contenu dynamique multilingue.',
-                    'ar' => 'هذا القسم مثال على محتوى ديناميكي متعدد اللغات.',
-                    'en' => 'This section is an example of multilingual dynamic content.',
+                    'fr' => "Nous transformons les idées en expériences web mesurables.",
+                    'ar' => 'نحوّل الأفكار إلى تجارب ويب قابلة للقياس.',
+                    'en' => 'We turn ideas into measurable web experiences.',
                 ],
+                'featured_image' => 'pages/home-cover.jpg',
+                'seo' => [
+                    'meta_title' => [
+                        'fr' => 'Accueil | Kortable',
+                        'ar' => 'الرئيسية | كورتابل',
+                        'en' => 'Home | Kortable',
+                    ],
+                    'meta_description' => [
+                        'fr' => 'Créez un portfolio multilingue qui attire des clients.',
+                        'ar' => 'أنشئ موقع بورتفوليو متعدد اللغات يجذب العملاء.',
+                        'en' => 'Build a multilingual portfolio that wins clients.',
+                    ],
+                ],
+                'published_at' => now(),
+            ]
+        );
+
+        Page::updateOrCreate(
+            ['slug' => 'about'],
+            [
+                'status' => 'published',
+                'is_active' => true,
+                'template' => 'default',
+                'slug_translations' => [
+                    'fr' => 'a-propos',
+                    'ar' => 'about',
+                    'en' => 'about',
+                ],
+                'title' => [
+                    'fr' => 'À propos',
+                    'ar' => 'من نحن',
+                    'en' => 'About',
+                ],
+                'excerpt' => [
+                    'fr' => 'Une équipe produit, design et contenu sous le même toit.',
+                    'ar' => 'فريق يجمع التصميم والتطوير وصناعة المحتوى.',
+                    'en' => 'A team combining product, design, and content expertise.',
+                ],
+                'content' => [
+                    'fr' => 'Kortable aide les freelances et studios à valoriser leurs projets.',
+                    'ar' => 'يساعد كورتابل المستقلين والاستوديوهات على إبراز أعمالهم.',
+                    'en' => 'Kortable helps freelancers and studios showcase work with impact.',
+                ],
+                'body' => [
+                    'fr' => 'Kortable aide les freelances et studios à valoriser leurs projets.',
+                    'ar' => 'يساعد كورتابل المستقلين والاستوديوهات على إبراز أعمالهم.',
+                    'en' => 'Kortable helps freelancers and studios showcase work with impact.',
+                ],
+                'seo' => [
+                    'meta_title' => ['fr' => 'À propos | Kortable', 'ar' => 'من نحن | كورتابل', 'en' => 'About | Kortable'],
+                ],
+                'published_at' => now(),
             ]
         );
     }
