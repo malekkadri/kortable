@@ -31,6 +31,7 @@
 
                 @can('manage_pages')
                     <a class="block px-3 py-2 rounded hover:bg-slate-800" href="{{ route('admin.pages.index') }}">Pages</a>
+                    <a class="block px-3 py-2 rounded hover:bg-slate-800" href="{{ route('admin.home-sections.index') }}">Homepage Sections</a>
                     <a class="block px-3 py-2 rounded hover:bg-slate-800" href="{{ route('admin.services.index') }}">Services</a>
                     <a class="block px-3 py-2 rounded hover:bg-slate-800" href="{{ route('admin.testimonials.index') }}">Testimonials</a>
                     <a class="block px-3 py-2 rounded hover:bg-slate-800" href="{{ route('admin.menus.index') }}">Menus</a>
