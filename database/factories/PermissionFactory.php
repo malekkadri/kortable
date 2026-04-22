@@ -1,0 +1,21 @@
+<?php
+
+namespace Database\Factories;
+
+use App\Models\Permission;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+class PermissionFactory extends Factory
+{
+    protected $model = Permission::class;
+
+    public function definition(): array
+    {
+        $name = fake()->unique()->slug(2, '_');
+
+        return [
+            'name' => $name,
+            'label' => str($name)->replace('_', ' ')->title()->value(),
+        ];
+    }
+}

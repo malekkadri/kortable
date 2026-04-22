@@ -15,22 +15,48 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-900 {{ $isRtl ? 'text-right' : 'text-left' }}">
-    <div class="min-h-screen grid grid-cols-1 md:grid-cols-[240px_1fr]">
-        <aside class="bg-slate-900 text-slate-100 p-4 space-y-3">
-            <h1 class="font-semibold">{{ __('ui.admin_panel') }}</h1>
-            <nav class="space-y-2 text-sm">
-                <a class="block hover:text-white" href="{{ route('admin.dashboard') }}">{{ __('ui.dashboard') }}</a>
-                <a class="block hover:text-white" href="{{ route('admin.settings.edit') }}">{{ __('ui.settings') }}</a>
-                <a class="block hover:text-white" href="{{ route('admin.modules.index') }}">{{ __('ui.modules') }}</a>
+    <div class="min-h-screen grid grid-cols-1 md:grid-cols-[260px_1fr]">
+        <aside class="bg-slate-900 text-slate-100 p-5">
+            <h1 class="text-lg font-semibold mb-6">{{ __('ui.admin_panel') }}</h1>
+            <nav class="space-y-1 text-sm">
+                <a class="block px-3 py-2 rounded hover:bg-slate-800" href="{{ route('admin.dashboard') }}">{{ __('ui.dashboard') }}</a>
+
+                @can('manage_users')
+                    <a class="block px-3 py-2 rounded hover:bg-slate-800" href="{{ route('admin.users.index') }}">{{ __('ui.users') }}</a>
+                @endcan
+
+                @can('manage_settings')
+                    <a class="block px-3 py-2 rounded hover:bg-slate-800" href="{{ route('admin.settings.edit') }}">{{ __('ui.settings') }}</a>
+                @endcan
+
+                @can('manage_pages')
+                    <a class="block px-3 py-2 rounded hover:bg-slate-800" href="{{ route('admin.modules.index') }}">{{ __('ui.modules') }}</a>
+                @endcan
             </nav>
-            <form action="{{ route('admin.logout') }}" method="POST">
-                @csrf
-                <button type="submit" class="mt-4 text-xs underline">{{ __('ui.logout') }}</button>
-            </form>
         </aside>
-        <main class="p-6">
-            @yield('content')
-        </main>
+
+        <section class="flex flex-col">
+            <header class="bg-white border-b px-6 py-4 flex items-center justify-between gap-4">
+                <p class="text-sm text-slate-500">{{ __('ui.admin_welcome') }}</p>
+                <div class="flex items-center gap-3">
+                    <p class="text-sm font-medium">{{ auth()->user()?->name }}</p>
+                    <form action="{{ route('admin.logout') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="text-xs px-3 py-2 rounded border border-slate-300 hover:bg-slate-50">{{ __('ui.logout') }}</button>
+                    </form>
+                </div>
+            </header>
+
+            <main class="p-6">
+                @if (session('status'))
+                    <div class="mb-4 rounded border border-green-200 bg-green-50 text-green-800 px-4 py-3 text-sm">
+                        {{ session('status') }}
+                    </div>
+                @endif
+
+                @yield('content')
+            </main>
+        </section>
     </div>
 </body>
 </html>

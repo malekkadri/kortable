@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Permission;
 use App\Models\Role;
-use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class RolePermissionSeeder extends Seeder
@@ -32,12 +31,5 @@ class RolePermissionSeeder extends Seeder
             'manage_menus',
             'manage_messages',
         ])->pluck('id'));
-
-        $admin = User::where('email', 'admin@kortable.test')->first();
-        if ($admin) {
-            $admin->roles()->syncWithoutDetaching([$superAdmin->id]);
-            $admin->is_admin = true;
-            $admin->save();
-        }
     }
 }
