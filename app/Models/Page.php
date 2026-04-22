@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasTranslatableAttributes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Page extends Model
 {
     use HasFactory;
+    use HasTranslatableAttributes;
 
     protected $fillable = [
         'slug',
@@ -42,12 +44,10 @@ class Page extends Model
 
     public function getLocalized(string $field, string $locale): ?string
     {
-        $value = $this->{$field} ?? [];
-
-        if ($field === 'content' && empty($value)) {
-            $value = $this->body ?? [];
+        if ($field === 'content' && empty($this->content)) {
+            return $this->getTranslated('body', $locale);
         }
 
-        return $value[$locale] ?? $value[config('app.fallback_locale')] ?? null;
+        return $this->getTranslated($field, $locale);
     }
 }
