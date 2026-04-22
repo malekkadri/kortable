@@ -10,6 +10,8 @@ return [
     'modules' => 'Modules',
     'users' => 'Users',
     'planned_modules' => 'Planned modules',
+    'services' => 'Services',
+    'testimonials' => 'Testimonials',
     'logout' => 'Logout',
     'site_settings' => 'Site settings',
     'site_name' => 'Site name',

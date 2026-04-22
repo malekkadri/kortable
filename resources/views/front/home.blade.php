@@ -10,7 +10,7 @@
 </section>
 
 <section class="mb-6">
-    <h2 class="text-2xl font-semibold mb-3">Services</h2>
+    <h2 id="services" class="text-2xl font-semibold mb-3">{{ __('ui.services', [], app()->getLocale()) }}</h2>
     <div class="grid md:grid-cols-3 gap-4">
         @foreach($services as $service)
             <article class="bg-white border rounded p-4">
@@ -22,7 +22,7 @@
 </section>
 
 <section>
-    <h2 class="text-2xl font-semibold mb-3">Testimonials</h2>
+    <h2 class="text-2xl font-semibold mb-3">{{ __('ui.testimonials', [], app()->getLocale()) }}</h2>
     <div class="grid md:grid-cols-2 gap-4">
         @foreach($testimonials as $testimonial)
             <article class="bg-white border rounded p-4">

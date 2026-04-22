@@ -96,5 +96,44 @@ class PageSeeder extends Seeder
                 'published_at' => now(),
             ]
         );
+
+        Page::updateOrCreate(
+            ['slug' => 'contact'],
+            [
+                'status' => 'published',
+                'is_active' => true,
+                'template' => 'default',
+                'sort_order' => 3,
+                'slug_translations' => [
+                    'fr' => 'contact',
+                    'ar' => 'contact',
+                    'en' => 'contact',
+                ],
+                'title' => [
+                    'fr' => 'Contact',
+                    'ar' => 'تواصل معنا',
+                    'en' => 'Contact',
+                ],
+                'excerpt' => [
+                    'fr' => 'Parlons de votre prochain projet digital.',
+                    'ar' => 'دعنا نتحدث عن مشروعك الرقمي القادم.',
+                    'en' => 'Let\'s discuss your next digital project.',
+                ],
+                'content' => [
+                    'fr' => 'Écrivez-nous via le formulaire ou réservez un appel découverte.',
+                    'ar' => 'راسلنا عبر النموذج أو احجز مكالمة تعريفية.',
+                    'en' => 'Message us through the form or book a discovery call.',
+                ],
+                'body' => [
+                    'fr' => 'Écrivez-nous via le formulaire ou réservez un appel découverte.',
+                    'ar' => 'راسلنا عبر النموذج أو احجز مكالمة تعريفية.',
+                    'en' => 'Message us through the form or book a discovery call.',
+                ],
+                'seo' => [
+                    'meta_title' => ['fr' => 'Contact | Kortable', 'ar' => 'تواصل معنا | كورتابل', 'en' => 'Contact | Kortable'],
+                ],
+                'published_at' => now(),
+            ]
+        );
     }
 }

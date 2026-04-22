@@ -42,6 +42,12 @@ class PageController extends Controller
             ? $request->file('featured_image')->store('pages', 'public')
             : null;
 
+        if ($request->hasFile('seo_og_image')) {
+            $seo = $data['seo'] ?? [];
+            $seo['og_image'] = $request->file('seo_og_image')->store('pages/seo', 'public');
+            $data['seo'] = $seo;
+        }
+
         Page::create($data);
 
         return redirect()->route('admin.pages.index')->with('status', __('messages.page_created'));
@@ -65,6 +71,15 @@ class PageController extends Controller
             unset($data['featured_image']);
         }
 
+        if ($request->hasFile('seo_og_image')) {
+            if (! empty($page->seo['og_image'])) {
+                Storage::disk('public')->delete($page->seo['og_image']);
+            }
+            $seo = $data['seo'] ?? $page->seo ?? [];
+            $seo['og_image'] = $request->file('seo_og_image')->store('pages/seo', 'public');
+            $data['seo'] = $seo;
+        }
+
         $page->update($data);
 
         return redirect()->route('admin.pages.index')->with('status', __('messages.page_updated'));
@@ -74,6 +89,10 @@ class PageController extends Controller
     {
         if ($page->featured_image) {
             Storage::disk('public')->delete($page->featured_image);
+        }
+
+        if (! empty($page->seo['og_image'])) {
+            Storage::disk('public')->delete($page->seo['og_image']);
         }
 
         $page->delete();

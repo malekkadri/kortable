@@ -19,6 +19,7 @@ class StorePageRequest extends FormRequest
             'template' => ['required', 'string', 'max:50'],
             'published_at' => ['nullable', 'date'],
             'seo.og_image' => ['nullable', 'string', 'max:255'],
+            'seo_og_image' => ['nullable', 'image', 'max:3072'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
         ];
 

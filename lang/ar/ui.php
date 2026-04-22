@@ -7,6 +7,8 @@ return [
     'settings' => 'الإعدادات',
     'modules' => 'الوحدات',
     'planned_modules' => 'الوحدات المخططة',
+    'services' => 'الخدمات',
+    'testimonials' => 'آراء العملاء',
     'logout' => 'تسجيل الخروج',
     'site_settings' => 'إعدادات الموقع',
     'site_name' => 'اسم الموقع',

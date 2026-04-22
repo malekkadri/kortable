@@ -6,8 +6,8 @@
     $locale = app()->getLocale();
     $isRtl = Locale::isRtl($locale);
     $siteSetting = SiteSetting::first();
-    $headerMenu = Menu::where('location', 'header')->where('is_active', true)->with(['items' => fn($q) => $q->whereNull('parent_id')->where('is_active', true)->with('children')])->first();
-    $footerMenu = Menu::where('location', 'footer')->where('is_active', true)->with(['items' => fn($q) => $q->whereNull('parent_id')->where('is_active', true)->with('children')])->first();
+    $headerMenu = Menu::where('location', 'header')->where('is_active', true)->with(['items' => fn($q) => $q->whereNull('parent_id')->where('is_active', true)->with(['children' => fn ($childQuery) => $childQuery->where('is_active', true), 'page'])])->first();
+    $footerMenu = Menu::where('location', 'footer')->where('is_active', true)->with(['items' => fn($q) => $q->whereNull('parent_id')->where('is_active', true)->with(['children' => fn ($childQuery) => $childQuery->where('is_active', true), 'page'])])->first();
 @endphp
 
 <!DOCTYPE html>
@@ -28,12 +28,26 @@
                 @endif
                 <span>{{ $siteSetting?->site_name[$locale] ?? config('app.name') }}</span>
             </a>
-            <nav class="flex gap-4 text-sm">
+            <nav class="flex gap-6 text-sm">
                 @foreach($headerMenu?->items ?? [] as $item)
-                    @php
-                        $url = $item->type === 'page' && $item->page ? route('front.pages.show', ['locale' => $locale, 'slug' => $item->page->slug]) : $item->custom_url;
-                    @endphp
-                    <a href="{{ $url }}">{{ $item->label[$locale] ?? $item->label['en'] ?? '' }}</a>
+                    @php($url = $item->resolveUrl($locale))
+                    <div class="relative" x-data="{ open: false }">
+                        @if($item->children->isNotEmpty())
+                            <button type="button" @mouseenter="open = true" @mouseleave="open = false" class="flex items-center gap-1">
+                                {{ $item->label[$locale] ?? $item->label['en'] ?? '' }}
+                            </button>
+                            <div x-show="open" @mouseenter="open = true" @mouseleave="open = false" x-cloak class="absolute z-10 mt-2 min-w-48 bg-white border rounded shadow p-2">
+                                @foreach($item->children as $child)
+                                    @php($childUrl = $child->resolveUrl($locale))
+                                    @if($childUrl)
+                                        <a class="block px-2 py-1 rounded hover:bg-slate-50" href="{{ $childUrl }}">{{ $child->label[$locale] ?? $child->label['en'] ?? '' }}</a>
+                                    @endif
+                                @endforeach
+                            </div>
+                        @elseif($url)
+                            <a href="{{ $url }}">{{ $item->label[$locale] ?? $item->label['en'] ?? '' }}</a>
+                        @endif
+                    </div>
                 @endforeach
             </nav>
             <x-language-switcher />
@@ -53,8 +67,16 @@
             </div>
             <div class="space-y-1">
                 @foreach($footerMenu?->items ?? [] as $item)
-                    @php $url = $item->type === 'page' && $item->page ? route('front.pages.show', ['locale' => $locale, 'slug' => $item->page->slug]) : $item->custom_url; @endphp
-                    <a class="block" href="{{ $url }}">{{ $item->label[$locale] ?? $item->label['en'] ?? '' }}</a>
+                    @php($url = $item->resolveUrl($locale))
+                    @if($url)
+                        <a class="block" href="{{ $url }}">{{ $item->label[$locale] ?? $item->label['en'] ?? '' }}</a>
+                    @endif
+                    @foreach($item->children as $child)
+                        @php($childUrl = $child->resolveUrl($locale))
+                        @if($childUrl)
+                            <a class="block {{ $isRtl ? 'mr-3' : 'ml-3' }} text-slate-500" href="{{ $childUrl }}">{{ $child->label[$locale] ?? $child->label['en'] ?? '' }}</a>
+                        @endif
+                    @endforeach
                 @endforeach
             </div>
         </div>

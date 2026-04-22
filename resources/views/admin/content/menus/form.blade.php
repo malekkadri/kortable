@@ -13,7 +13,7 @@
             <select name="type" class="border rounded px-3 py-2"><option value="page">Internal page</option><option value="custom">Custom URL</option></select>
             <select name="linked_page_id" class="border rounded px-3 py-2"><option value="">Select page</option>@foreach($pages as $page)<option value="{{ $page->id }}">{{ $page->title['en'] ?? $page->slug }}</option>@endforeach</select>
             <input name="custom_url" placeholder="https://... or /contact" class="border rounded px-3 py-2">
-            <select name="parent_id" class="border rounded px-3 py-2"><option value="">Top level</option>@foreach($menu->items as $item)<option value="{{ $item->id }}">{{ $item->label['en'] ?? 'Item' }}</option>@endforeach</select>
+            <select name="parent_id" class="border rounded px-3 py-2"><option value="">Top level</option>@foreach($flatItems as $item)<option value="{{ $item->id }}">{{ $item->label['en'] ?? 'Item' }}</option>@endforeach</select>
             <input name="sort_order" type="number" value="0" class="border rounded px-3 py-2">
             <select name="is_active" class="border rounded px-3 py-2"><option value="1">Active</option><option value="0">Inactive</option></select>
         </div>
@@ -29,6 +29,16 @@
             <div class="flex justify-between"><p>{{ $item->label['en'] ?? 'Item' }} <span class="text-xs text-slate-500">({{ $item->type }})</span></p>
                 <form method="POST" action="{{ route('admin.menus.items.destroy', [$menu, $item]) }}">@csrf @method('DELETE')<button class="text-red-600 text-sm">Delete</button></form>
             </div>
+            <form method="POST" action="{{ route('admin.menus.items.update', [$menu, $item]) }}" class="mt-3 grid md:grid-cols-4 gap-2">@csrf @method('PUT')
+                <select name="type" class="border rounded px-3 py-2"><option value="page" @selected($item->type === 'page')>Internal page</option><option value="custom" @selected($item->type === 'custom')>Custom URL</option></select>
+                <select name="linked_page_id" class="border rounded px-3 py-2"><option value="">Select page</option>@foreach($pages as $page)<option value="{{ $page->id }}" @selected($item->linked_page_id === $page->id)>{{ $page->title['en'] ?? $page->slug }}</option>@endforeach</select>
+                <input name="custom_url" value="{{ $item->custom_url }}" placeholder="https://... or /contact" class="border rounded px-3 py-2">
+                <select name="parent_id" class="border rounded px-3 py-2"><option value="">Top level</option>@foreach($flatItems->where('id','!=',$item->id) as $candidate)<option value="{{ $candidate->id }}" @selected($item->parent_id === $candidate->id)>{{ $candidate->label['en'] ?? 'Item' }}</option>@endforeach</select>
+                <input name="sort_order" type="number" value="{{ $item->sort_order }}" class="border rounded px-3 py-2">
+                <select name="is_active" class="border rounded px-3 py-2"><option value="1" @selected($item->is_active)>Active</option><option value="0" @selected(! $item->is_active)>Inactive</option></select>
+                <div class="md:col-span-4"><x-admin.translatable-tabs name="label" label="Label" :values="$item->label ?? []" required /></div>
+                <div class="md:col-span-4"><button class="px-3 py-2 border rounded">Update item</button></div>
+            </form>
             @if($item->children->isNotEmpty())
                 <ul class="mt-2 ml-4 list-disc text-sm text-slate-600">@foreach($item->children as $child)<li>{{ $child->label['en'] ?? 'Item' }}</li>@endforeach</ul>
             @endif

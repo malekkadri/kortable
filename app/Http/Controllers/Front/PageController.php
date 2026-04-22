@@ -10,7 +10,12 @@ class PageController extends Controller
 {
     public function show(string $locale, string $slug): View
     {
-        $page = Page::published()->where('slug', $slug)->firstOrFail();
+        $page = Page::published()
+            ->where(function ($query) use ($slug, $locale) {
+                $query->where('slug', $slug)
+                    ->orWhere("slug_translations->{$locale}", $slug);
+            })
+            ->firstOrFail();
 
         return view('front.page', compact('page'));
     }
