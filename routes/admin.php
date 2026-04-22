@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\Content\HomeSectionController;
 use App\Http\Controllers\Admin\Content\ServiceController;
 use App\Http\Controllers\Admin\Content\SiteSettingController;
 use App\Http\Controllers\Admin\Content\TestimonialController;
+use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
@@ -25,6 +26,12 @@ Route::prefix('admin')->as('admin.')->group(function () {
         Route::middleware('can:manage_settings')->group(function () {
             Route::get('/settings', [SiteSettingController::class, 'edit'])->name('settings.edit');
             Route::put('/settings', [SiteSettingController::class, 'update'])->name('settings.update');
+        });
+
+        Route::middleware('can:manage_messages')->group(function () {
+            Route::get('/contact-messages', [ContactMessageController::class, 'index'])->name('contact-messages.index');
+            Route::get('/contact-messages/{contactMessage}', [ContactMessageController::class, 'show'])->name('contact-messages.show');
+            Route::put('/contact-messages/{contactMessage}', [ContactMessageController::class, 'update'])->name('contact-messages.update');
         });
 
         Route::middleware('can:manage_pages')->group(function () {

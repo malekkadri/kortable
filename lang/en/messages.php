@@ -24,4 +24,10 @@ return [
     'home_section_created' => 'Homepage section created successfully.',
     'home_section_updated' => 'Homepage section updated successfully.',
     'home_section_deleted' => 'Homepage section deleted successfully.',
+    'contact_form_success' => 'Your message has been sent successfully.',
+    'contact_form_error' => 'Please review the form and try again.',
+    'contact_form_spam_detected' => 'Spam protection triggered. Please try again.',
+    'contact_message_updated' => 'Contact message updated successfully.',
+    'contact_notification_subject' => 'New contact message: :subject',
+    'contact_notification_heading' => 'A new contact message was submitted.',
 ];
