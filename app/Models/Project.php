@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasTranslatableAttributes;
+use App\Support\Localization\Locale;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -9,11 +12,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Project extends Model
 {
     use HasFactory;
+    use HasTranslatableAttributes;
 
     protected $fillable = [
         'category_id',
         'title',
         'slug',
+        'slug_translations',
         'short_description',
         'description',
         'client_name',
@@ -31,6 +36,7 @@ class Project extends Model
 
     protected $casts = [
         'title' => 'array',
+        'slug_translations' => 'array',
         'short_description' => 'array',
         'description' => 'array',
         'gallery' => 'array',
@@ -47,8 +53,28 @@ class Project extends Model
         return $this->belongsTo(ProjectCategory::class, 'category_id');
     }
 
-    public function scopePublished($query)
+    public function scopePublished(Builder $query): Builder
     {
-        return $query->where('is_published', true)->orderBy('sort_order');
+        return $query->where('is_published', true);
+    }
+
+    public function scopeFeatured(Builder $query): Builder
+    {
+        return $query->where('is_featured', true);
+    }
+
+    public function scopeOrdered(Builder $query): Builder
+    {
+        return $query->orderBy('sort_order')->orderByDesc('published_at')->orderByDesc('id');
+    }
+
+    public function localizedSlug(?string $locale = null): string
+    {
+        $locale ??= app()->getLocale();
+        $fallback = Locale::fallback();
+
+        return $this->slug_translations[$locale]
+            ?? $this->slug_translations[$fallback]
+            ?? $this->slug;
     }
 }
