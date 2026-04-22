@@ -20,6 +20,7 @@ class SiteSettingSeeder extends Seeder
                 'contact_email' => 'hello@kortable.test',
                 'phone' => '+1 415 555 0138',
                 'address' => ['fr' => '750 Market St, San Francisco, CA', 'ar' => '750 شارع ماركت، سان فرانسيسكو، كاليفورنيا', 'en' => '750 Market St, San Francisco, CA'],
+                'map_embed_url' => 'https://maps.google.com/maps?q=750%20Market%20St%20San%20Francisco&t=&z=13&ie=UTF8&iwloc=&output=embed',
                 'social_links' => ['linkedin' => 'https://www.linkedin.com/company/kortable', 'instagram' => 'https://www.instagram.com/kortable', 'github' => 'https://github.com/kortable'],
                 'seo_defaults' => [
                     'title' => ['fr' => 'Kortable Studio', 'ar' => 'استوديو كورتابل', 'en' => 'Kortable Studio'],

@@ -20,6 +20,7 @@ class SiteSetting extends Model
         'contact_email',
         'phone',
         'address',
+        'map_embed_url',
         'social_links',
         'seo_defaults',
         'footer_content',

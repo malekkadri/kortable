@@ -20,6 +20,10 @@ class RouteServiceProvider extends ServiceProvider
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });
 
+        RateLimiter::for('contact-form', function (Request $request) {
+            return Limit::perMinute(5)->by($request->ip());
+        });
+
         Route::bind('localizedProject', function (string $value, $route) {
             $locale = $route?->parameter('locale');
 

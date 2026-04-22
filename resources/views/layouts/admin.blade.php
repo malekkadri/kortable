@@ -29,6 +29,10 @@
                     <a class="block px-3 py-2 rounded hover:bg-slate-800" href="{{ route('admin.settings.edit') }}">{{ __('ui.settings') }}</a>
                 @endcan
 
+                @can('manage_messages')
+                    <a class="block px-3 py-2 rounded hover:bg-slate-800" href="{{ route('admin.contact-messages.index') }}">{{ __('ui.contact_messages') }}</a>
+                @endcan
+
                 @can('manage_pages')
                     <a class="block px-3 py-2 rounded hover:bg-slate-800" href="{{ route('admin.pages.index') }}">Pages</a>
                     <a class="block px-3 py-2 rounded hover:bg-slate-800" href="{{ route('admin.home-sections.index') }}">Homepage Sections</a>
