@@ -64,3 +64,29 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## Project Structure
+
+This repository now includes a **Kortable foundation architecture** for a multilingual public website and protected admin panel.
+
+- `routes/front.php`: Front-office routes grouped by locale (`fr`, `ar`, `en`) with localized URLs.
+- `routes/admin.php`: Admin routes under `/admin`, protected by authentication and admin middleware.
+- `routes/localization.php`: Language switching endpoint used by the front-office language switcher.
+- `app/Http/Middleware/SetLocale.php`: Resolves locale from route/session and applies it application-wide.
+- `app/Http/Middleware/EnsureAdminUser.php`: Restricts back-office access to admin users.
+- `app/Models/Setting.php` + `app/Services/SettingService.php`: Dynamic key/value settings (including translatable values).
+- `app/Models/Page.php`: Basic dynamic CMS page model with multilingual fields.
+- `resources/views/layouts/front.blade.php`: Shared public layout with RTL support for Arabic.
+- `resources/views/layouts/admin.blade.php`: Shared admin layout and navigation shell.
+- `config/kortable.php`: Central module/localization configuration (locales, RTL locales, module registry).
+- `database/seeders/*`: Initial admin user and multilingual default dynamic content seeds.
+
+Prepared module paths and routing are ready to scale into:
+- Settings
+- Pages
+- Projects
+- Services
+- Testimonials
+- Contact messages
+- Media/assets
+- Users/roles
