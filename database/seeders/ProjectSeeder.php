@@ -10,41 +10,108 @@ class ProjectSeeder extends Seeder
 {
     public function run(): void
     {
-        $category = ProjectCategory::where('slug', 'web-development')->first();
+        $categories = ProjectCategory::pluck('id', 'slug');
 
-        Project::updateOrCreate(
-            ['slug' => 'atelier-nova-portfolio'],
+        $projects = [
             [
-                'category_id' => $category?->id,
-                'title' => [
-                    'fr' => 'Portfolio Atelier Nova',
-                    'ar' => 'بورتفوليو أتيليه نوفا',
-                    'en' => 'Atelier Nova Portfolio',
-                ],
-                'short_description' => [
-                    'fr' => 'Refonte portfolio B2B orientée conversion.',
-                    'ar' => 'إعادة تصميم بورتفوليو B2B مع تركيز على التحويل.',
-                    'en' => 'B2B portfolio redesign optimized for conversion.',
-                ],
-                'description' => [
-                    'fr' => 'Architecture éditoriale multilingue avec CMS sur-mesure.',
-                    'ar' => 'بنية محتوى متعددة اللغات مع نظام إدارة مخصص.',
-                    'en' => 'Multilingual editorial architecture with custom CMS.',
-                ],
-                'client_name' => 'Atelier Nova',
-                'project_date' => '2025-11-15',
-                'website_url' => 'https://example.com/nova',
-                'featured_image' => 'projects/nova/cover.jpg',
-                'gallery' => ['projects/nova/1.jpg', 'projects/nova/2.jpg'],
-                'technologies' => ['Laravel', 'Tailwind CSS', 'Alpine.js'],
-                'is_featured' => true,
-                'is_published' => true,
-                'sort_order' => 1,
-                'published_at' => now()->subDays(30),
-                'seo' => [
-                    'meta_title' => ['fr' => 'Projet Nova', 'ar' => 'مشروع نوفا', 'en' => 'Nova Project'],
-                ],
-            ]
-        );
+                'slug' => 'atelier-nova-portfolio',
+                'category' => 'web-development',
+                'client' => 'Atelier Nova',
+                'date' => '2025-11-15',
+                'featured' => true,
+                'sort' => 1,
+            ],
+            [
+                'slug' => 'sahara-fashion-rebrand',
+                'category' => 'branding',
+                'client' => 'Sahara Fashion',
+                'date' => '2025-09-01',
+                'featured' => true,
+                'sort' => 2,
+            ],
+            [
+                'slug' => 'greenbasket-store',
+                'category' => 'ecommerce',
+                'client' => 'GreenBasket',
+                'date' => '2025-07-10',
+                'featured' => true,
+                'sort' => 3,
+            ],
+            [
+                'slug' => 'medlink-patient-portal',
+                'category' => 'web-development',
+                'client' => 'MedLink Clinic',
+                'date' => '2025-05-18',
+                'featured' => false,
+                'sort' => 4,
+            ],
+            [
+                'slug' => 'atlas-logistics-website',
+                'category' => 'web-development',
+                'client' => 'Atlas Logistics',
+                'date' => '2025-03-22',
+                'featured' => false,
+                'sort' => 5,
+            ],
+            [
+                'slug' => 'casa-miel-brand-kit',
+                'category' => 'branding',
+                'client' => 'Casa Miel',
+                'date' => '2025-02-05',
+                'featured' => false,
+                'sort' => 6,
+            ],
+        ];
+
+        foreach ($projects as $item) {
+            Project::updateOrCreate(
+                ['slug' => $item['slug']],
+                [
+                    'category_id' => $categories[$item['category']] ?? null,
+                    'title' => [
+                        'fr' => ucfirst(str_replace('-', ' ', $item['slug'])).' (FR)',
+                        'ar' => 'مشروع '.str_replace('-', ' ', $item['slug']),
+                        'en' => ucwords(str_replace('-', ' ', $item['slug'])),
+                    ],
+                    'slug_translations' => [
+                        'fr' => $item['slug'].'-fr',
+                        'ar' => $item['slug'].'-ar',
+                        'en' => $item['slug'],
+                    ],
+                    'short_description' => [
+                        'fr' => 'Projet portfolio pour '.$item['client'].' axé performance et conversion.',
+                        'ar' => 'مشروع أعمال لـ '.$item['client'].' مع تركيز على الأداء والتحويل.',
+                        'en' => 'Portfolio project for '.$item['client'].' focused on performance and conversion.',
+                    ],
+                    'description' => [
+                        'fr' => 'Analyse, design, développement et optimisation SEO sur un flux éditorial multilingue.',
+                        'ar' => 'تحليل وتصميم وتطوير وتحسين SEO ضمن تدفق محتوى متعدد اللغات.',
+                        'en' => 'Discovery, UX design, engineering, and SEO optimization on multilingual content workflows.',
+                    ],
+                    'client_name' => $item['client'],
+                    'project_date' => $item['date'],
+                    'website_url' => 'https://example.com/'.$item['slug'],
+                    'featured_image' => null,
+                    'gallery' => [],
+                    'technologies' => ['Laravel', 'Tailwind CSS', 'MySQL'],
+                    'is_featured' => $item['featured'],
+                    'is_published' => true,
+                    'sort_order' => $item['sort'],
+                    'published_at' => now()->subDays($item['sort'] * 5),
+                    'seo' => [
+                        'meta_title' => [
+                            'fr' => 'Portfolio '.$item['client'],
+                            'ar' => 'ملف أعمال '.$item['client'],
+                            'en' => $item['client'].' Portfolio',
+                        ],
+                        'meta_description' => [
+                            'fr' => 'Étude de cas '.$item['client'],
+                            'ar' => 'دراسة حالة '.$item['client'],
+                            'en' => 'Case study for '.$item['client'],
+                        ],
+                    ],
+                ]
+            );
+        }
     }
 }

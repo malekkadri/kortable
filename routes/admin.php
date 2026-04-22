@@ -3,6 +3,8 @@
 use App\Http\Controllers\Admin\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Admin\Content\MenuController;
 use App\Http\Controllers\Admin\Content\PageController;
+use App\Http\Controllers\Admin\Content\ProjectCategoryController;
+use App\Http\Controllers\Admin\Content\ProjectController;
 use App\Http\Controllers\Admin\Content\ServiceController;
 use App\Http\Controllers\Admin\Content\SiteSettingController;
 use App\Http\Controllers\Admin\Content\TestimonialController;
@@ -29,6 +31,8 @@ Route::prefix('admin')->as('admin.')->group(function () {
             Route::resource('services', ServiceController::class)->except('show');
             Route::resource('testimonials', TestimonialController::class)->except('show');
             Route::resource('menus', MenuController::class)->except('show');
+            Route::resource('project-categories', ProjectCategoryController::class)->except('show');
+            Route::resource('projects', ProjectController::class)->except('show');
             Route::post('/menus/{menu}/items', [MenuController::class, 'storeItem'])->name('menus.items.store');
             Route::put('/menus/{menu}/items/{item}', [MenuController::class, 'updateItem'])->name('menus.items.update');
             Route::delete('/menus/{menu}/items/{item}', [MenuController::class, 'destroyItem'])->name('menus.items.destroy');
