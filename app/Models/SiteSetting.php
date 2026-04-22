@@ -22,6 +22,7 @@ class SiteSetting extends Model
         'address',
         'social_links',
         'seo_defaults',
+        'footer_content',
     ];
 
     protected $casts = [
@@ -30,6 +31,7 @@ class SiteSetting extends Model
         'address' => 'array',
         'social_links' => 'array',
         'seo_defaults' => 'array',
+        'footer_content' => 'array',
     ];
 
     public function getLocalized(string $field, ?string $locale = null): ?string

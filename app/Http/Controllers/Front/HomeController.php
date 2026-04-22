@@ -4,19 +4,20 @@ namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
 use App\Models\Page;
-use App\Services\SettingService;
+use App\Models\Service;
+use App\Models\SiteSetting;
+use App\Models\Testimonial;
 use Illuminate\Contracts\View\View;
 
 class HomeController extends Controller
 {
-    public function __invoke(SettingService $settingService): View
+    public function __invoke(): View
     {
-        $page = Page::published()->where('slug', 'home')->first();
-
         return view('front.home', [
-            'page' => $page,
-            'siteName' => $settingService->get('site_name', default: config('app.name')),
-            'headline' => $settingService->get('homepage_headline', default: __('messages.default_headline')),
+            'page' => Page::published()->where('slug', 'home')->first(),
+            'services' => Service::active()->get(),
+            'testimonials' => Testimonial::active()->get(),
+            'siteSetting' => SiteSetting::first(),
         ]);
     }
 }

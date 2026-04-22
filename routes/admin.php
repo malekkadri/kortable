@@ -1,9 +1,12 @@
 <?php
 
 use App\Http\Controllers\Admin\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Admin\Content\MenuController;
+use App\Http\Controllers\Admin\Content\PageController;
+use App\Http\Controllers\Admin\Content\ServiceController;
+use App\Http\Controllers\Admin\Content\SiteSettingController;
+use App\Http\Controllers\Admin\Content\TestimonialController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\ModuleController;
-use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -17,12 +20,18 @@ Route::prefix('admin')->as('admin.')->group(function () {
         Route::get('/', DashboardController::class)->name('dashboard');
 
         Route::middleware('can:manage_settings')->group(function () {
-            Route::get('/settings', [SettingsController::class, 'edit'])->name('settings.edit');
-            Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
+            Route::get('/settings', [SiteSettingController::class, 'edit'])->name('settings.edit');
+            Route::put('/settings', [SiteSettingController::class, 'update'])->name('settings.update');
         });
 
         Route::middleware('can:manage_pages')->group(function () {
-            Route::get('/modules', [ModuleController::class, 'index'])->name('modules.index');
+            Route::resource('pages', PageController::class)->except('show');
+            Route::resource('services', ServiceController::class)->except('show');
+            Route::resource('testimonials', TestimonialController::class)->except('show');
+            Route::resource('menus', MenuController::class)->except('show');
+            Route::post('/menus/{menu}/items', [MenuController::class, 'storeItem'])->name('menus.items.store');
+            Route::put('/menus/{menu}/items/{item}', [MenuController::class, 'updateItem'])->name('menus.items.update');
+            Route::delete('/menus/{menu}/items/{item}', [MenuController::class, 'destroyItem'])->name('menus.items.destroy');
         });
 
         Route::middleware('can:manage_users')->group(function () {

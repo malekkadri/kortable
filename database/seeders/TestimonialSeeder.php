@@ -9,25 +9,24 @@ class TestimonialSeeder extends Seeder
 {
     public function run(): void
     {
-        Testimonial::updateOrCreate(
-            ['author_name' => 'Sophie Martin'],
-            [
-                'author_role' => [
-                    'fr' => 'Directrice Marketing',
-                    'ar' => 'مديرة التسويق',
-                    'en' => 'Marketing Director',
-                ],
-                'company' => 'Atelier Nova',
-                'content' => [
-                    'fr' => 'Le nouveau site a doublé nos demandes qualifiées en 3 mois.',
-                    'ar' => 'الموقع الجديد ضاعف طلبات العملاء المؤهلين خلال 3 أشهر.',
-                    'en' => 'The new website doubled qualified leads in 3 months.',
-                ],
-                'avatar' => 'testimonials/sophie.jpg',
-                'rating' => 5,
-                'is_active' => true,
-                'sort_order' => 1,
-            ]
-        );
+        $rows = [
+            ['author_name' => 'Sophie Martin', 'company' => 'Atelier Nova'],
+            ['author_name' => 'Yassine Khouri', 'company' => 'YK Studio'],
+            ['author_name' => 'Emma Reed', 'company' => 'Northline Creative'],
+        ];
+
+        foreach ($rows as $index => $row) {
+            Testimonial::updateOrCreate(
+                ['author_name' => $row['author_name']],
+                [
+                    'author_role' => ['fr' => 'Directrice Marketing', 'ar' => 'مدير التسويق', 'en' => 'Marketing Director'],
+                    'company' => $row['company'],
+                    'content' => ['fr' => 'Excellent résultat avec impact business réel.', 'ar' => 'نتيجة ممتازة وتأثير حقيقي على الأعمال.', 'en' => 'Excellent outcome with real business impact.'],
+                    'rating' => 5,
+                    'is_active' => true,
+                    'sort_order' => $index + 1,
+                ]
+            );
+        }
     }
 }

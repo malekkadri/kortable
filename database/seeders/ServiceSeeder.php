@@ -9,25 +9,24 @@ class ServiceSeeder extends Seeder
 {
     public function run(): void
     {
-        Service::updateOrCreate(
-            ['slug' => 'portfolio-design'],
-            [
-                'title' => ['fr' => 'Design Portfolio', 'ar' => 'تصميم البورتفوليو', 'en' => 'Portfolio Design'],
-                'short_description' => [
-                    'fr' => 'UI haut de gamme pour valoriser vos études de cas.',
-                    'ar' => 'واجهة احترافية لعرض دراسات الحالة.',
-                    'en' => 'Premium UI to elevate your case studies.',
-                ],
-                'description' => [
-                    'fr' => 'Direction artistique, composants UI et responsive complet.',
-                    'ar' => 'اتجاه فني ومكوّنات واجهة واستجابة كاملة.',
-                    'en' => 'Art direction, component system, and full responsiveness.',
-                ],
-                'icon' => 'icon-palette',
-                'image' => 'services/design.jpg',
-                'is_active' => true,
-                'sort_order' => 1,
-            ]
-        );
+        $services = [
+            ['slug' => 'portfolio-design', 'title' => ['fr' => 'Design Portfolio', 'ar' => 'تصميم البورتفوليو', 'en' => 'Portfolio Design']],
+            ['slug' => 'web-development', 'title' => ['fr' => 'Développement Web', 'ar' => 'تطوير الويب', 'en' => 'Web Development']],
+            ['slug' => 'seo-content', 'title' => ['fr' => 'SEO & Contenu', 'ar' => 'تحسين محركات البحث والمحتوى', 'en' => 'SEO & Content']],
+        ];
+
+        foreach ($services as $index => $service) {
+            Service::updateOrCreate(
+                ['slug' => $service['slug']],
+                [
+                    'title' => $service['title'],
+                    'short_description' => ['fr' => 'Offre premium pour studios et freelances.', 'ar' => 'خدمة احترافية للاستوديوهات والمستقلين.', 'en' => 'Premium offer for studios and freelancers.'],
+                    'description' => ['fr' => 'Livraison rapide, qualité élevée, support continu.', 'ar' => 'تسليم سريع وجودة عالية ودعم مستمر.', 'en' => 'Fast delivery, high quality, ongoing support.'],
+                    'icon' => 'icon-star',
+                    'is_active' => true,
+                    'sort_order' => $index + 1,
+                ]
+            );
+        }
     }
 }
