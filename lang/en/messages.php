@@ -21,4 +21,7 @@ return [
     'menu_item_created' => 'Menu item created successfully.',
     'menu_item_updated' => 'Menu item updated successfully.',
     'menu_item_deleted' => 'Menu item deleted successfully.',
+    'home_section_created' => 'Homepage section created successfully.',
+    'home_section_updated' => 'Homepage section updated successfully.',
+    'home_section_deleted' => 'Homepage section deleted successfully.',
 ];
