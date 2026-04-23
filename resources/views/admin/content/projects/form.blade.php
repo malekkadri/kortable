@@ -28,6 +28,10 @@
     <x-admin.translatable-tabs name="description" label="Full description" :values="$project->description ?? []" type="textarea" rows="8" />
     <x-admin.translatable-tabs name="seo.meta_title" label="SEO title" :values="$project->seo['meta_title'] ?? []" />
     <x-admin.translatable-tabs name="seo.meta_description" label="SEO description" :values="$project->seo['meta_description'] ?? []" type="textarea" rows="3" />
+    <div class="grid md:grid-cols-2 gap-3">
+        <input name="seo[og_image]" value="{{ old('seo.og_image',$project->seo['og_image'] ?? '') }}" class="border rounded px-3 py-2" placeholder="OG image path">
+        <input name="seo_og_image" type="file" class="border rounded px-3 py-2">
+    </div>
 
     <input name="technologies" value="{{ old('technologies', implode(', ', $project->technologies ?? [])) }}" class="border rounded px-3 py-2 w-full" placeholder="Laravel, Vue, Tailwind">
 

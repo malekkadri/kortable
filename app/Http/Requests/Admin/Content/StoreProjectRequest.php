@@ -4,6 +4,7 @@ namespace App\Http\Requests\Admin\Content;
 
 use App\Support\Localization\Locale;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
 
 class StoreProjectRequest extends FormRequest
 {
@@ -29,6 +30,8 @@ class StoreProjectRequest extends FormRequest
             'is_published' => ['required', 'boolean'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
             'published_at' => ['nullable', 'date'],
+            'seo.og_image' => ['nullable', 'string', 'max:255'],
+            'seo_og_image' => ['nullable', 'image', 'max:4096'],
         ];
 
         foreach (Locale::all() as $locale) {
@@ -41,5 +44,29 @@ class StoreProjectRequest extends FormRequest
         }
 
         return $rules;
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $fallbackLocale = Locale::fallback();
+        $title = (array) $this->input('title', []);
+        $slug = Str::slug((string) $this->input('slug'));
+        $slugTranslations = (array) $this->input('slug_translations', []);
+
+        if ($slug === '' && ! empty($title[$fallbackLocale])) {
+            $slug = Str::slug((string) $title[$fallbackLocale]);
+        }
+
+        foreach (Locale::all() as $locale) {
+            if (empty($slugTranslations[$locale])) {
+                continue;
+            }
+            $slugTranslations[$locale] = Str::slug((string) $slugTranslations[$locale]);
+        }
+
+        $this->merge([
+            'slug' => $slug,
+            'slug_translations' => $slugTranslations,
+        ]);
     }
 }

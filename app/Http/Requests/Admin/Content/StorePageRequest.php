@@ -4,6 +4,7 @@ namespace App\Http\Requests\Admin\Content;
 
 use App\Support\Localization\Locale;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
 
 class StorePageRequest extends FormRequest
 {
@@ -34,5 +35,29 @@ class StorePageRequest extends FormRequest
         }
 
         return $rules;
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $fallbackLocale = Locale::fallback();
+        $title = (array) $this->input('title', []);
+        $slug = Str::slug((string) $this->input('slug'));
+        $slugTranslations = (array) $this->input('slug_translations', []);
+
+        if ($slug === '' && ! empty($title[$fallbackLocale])) {
+            $slug = Str::slug((string) $title[$fallbackLocale]);
+        }
+
+        foreach (Locale::all() as $locale) {
+            if (empty($slugTranslations[$locale])) {
+                continue;
+            }
+            $slugTranslations[$locale] = Str::slug((string) $slugTranslations[$locale]);
+        }
+
+        $this->merge([
+            'slug' => $slug,
+            'slug_translations' => $slugTranslations,
+        ]);
     }
 }

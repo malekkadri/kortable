@@ -62,6 +62,12 @@ class ProjectController extends Controller
             $data['featured_image'] = $request->file('featured_image')->store('projects/featured', 'public');
         }
 
+        if ($request->hasFile('seo_og_image')) {
+            $seo = $data['seo'] ?? [];
+            $seo['og_image'] = $request->file('seo_og_image')->store('projects/seo', 'public');
+            $data['seo'] = $seo;
+        }
+
         $data['gallery'] = $this->syncGallery([], $request);
 
         Project::create($data);
@@ -90,6 +96,15 @@ class ProjectController extends Controller
             unset($data['featured_image']);
         }
 
+        if ($request->hasFile('seo_og_image')) {
+            if (! empty($project->seo['og_image'])) {
+                Storage::disk('public')->delete($project->seo['og_image']);
+            }
+            $seo = $data['seo'] ?? $project->seo ?? [];
+            $seo['og_image'] = $request->file('seo_og_image')->store('projects/seo', 'public');
+            $data['seo'] = $seo;
+        }
+
         $data['gallery'] = $this->syncGallery($project->gallery ?? [], $request);
 
         $project->update($data);
@@ -105,6 +120,10 @@ class ProjectController extends Controller
 
         foreach ($project->gallery ?? [] as $path) {
             Storage::disk('public')->delete($path);
+        }
+
+        if (! empty($project->seo['og_image'])) {
+            Storage::disk('public')->delete($project->seo['og_image']);
         }
 
         $project->delete();

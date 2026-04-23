@@ -4,6 +4,8 @@ use App\Http\Controllers\Front\ContactController;
 use App\Http\Controllers\Front\HomeController;
 use App\Http\Controllers\Front\PageController;
 use App\Http\Controllers\Front\ProjectController;
+use App\Http\Controllers\Front\RobotsController;
+use App\Http\Controllers\Front\SitemapController;
 use App\Support\Localization\Locale;
 use Illuminate\Support\Facades\Route;
 
@@ -16,6 +18,9 @@ Route::get('/', function () {
 
     return redirect()->route('front.home', ['locale' => $locale]);
 });
+
+Route::get('/sitemap.xml', SitemapController::class)->name('front.sitemap');
+Route::get('/robots.txt', RobotsController::class)->name('front.robots');
 
 Route::prefix('{locale}')
     ->whereIn('locale', Locale::all())

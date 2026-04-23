@@ -18,12 +18,14 @@ class Service extends Model
         'image',
         'is_active',
         'sort_order',
+        'seo',
     ];
 
     protected $casts = [
         'title' => 'array',
         'short_description' => 'array',
         'description' => 'array',
+        'seo' => 'array',
         'is_active' => 'boolean',
     ];
 
