@@ -32,6 +32,8 @@ class UpdateProjectRequest extends FormRequest
             'is_published' => ['required', 'boolean'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
             'published_at' => ['nullable', 'date'],
+            'seo.og_image' => ['nullable', 'string', 'max:255'],
+            'seo_og_image' => ['nullable', 'image', 'max:4096'],
         ];
 
         foreach (Locale::all() as $locale) {

@@ -8,6 +8,7 @@ use App\Mail\NewContactMessageNotification;
 use App\Models\ContactMessage;
 use App\Models\Page;
 use App\Models\SiteSetting;
+use App\Support\Seo\SeoData;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Mail;
@@ -23,9 +24,19 @@ class ContactController extends Controller
             })
             ->first();
 
+        $siteSetting = SiteSetting::first();
+        $seo = SeoData::forContent(
+            $contactPage->seo ?? [],
+            $contactPage?->getLocalized('title', $locale) ?? __('Contact'),
+            $contactPage?->getLocalized('excerpt', $locale) ?? $siteSetting?->getLocalized('tagline', $locale),
+            $contactPage?->featured_image
+        );
+        $seo['canonical'] = route('front.contact.show', ['locale' => $locale]);
+
         return view('front.contact', [
             'contactPage' => $contactPage,
-            'siteSetting' => SiteSetting::first(),
+            'siteSetting' => $siteSetting,
+            'seo' => $seo,
         ]);
     }
 

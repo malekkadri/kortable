@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Concerns\HasTranslatableAttributes;
+use App\Support\Localization\Locale;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -50,5 +51,15 @@ class Page extends Model
         }
 
         return $this->getTranslated($field, $locale);
+    }
+
+    public function localizedSlug(?string $locale = null): string
+    {
+        $locale ??= app()->getLocale();
+        $fallback = Locale::fallback();
+
+        return $this->slug_translations[$locale]
+            ?? $this->slug_translations[$fallback]
+            ?? $this->slug;
     }
 }

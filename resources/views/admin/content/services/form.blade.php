@@ -12,5 +12,11 @@
 <x-admin.translatable-tabs name="title" label="Title" :values="$service->title ?? []" required />
 <x-admin.translatable-tabs name="short_description" label="Short description" :values="$service->short_description ?? []" type="textarea" />
 <x-admin.translatable-tabs name="description" label="Description" :values="$service->description ?? []" type="textarea" rows="6" />
+<x-admin.translatable-tabs name="seo.meta_title" label="SEO title" :values="$service->seo['meta_title'] ?? []" />
+<x-admin.translatable-tabs name="seo.meta_description" label="SEO description" :values="$service->seo['meta_description'] ?? []" type="textarea" rows="3" />
+<div class="grid md:grid-cols-2 gap-3">
+    <input name="seo[og_image]" value="{{ old('seo.og_image',$service->seo['og_image'] ?? '') }}" class="border rounded px-3 py-2" placeholder="OG image path">
+    <input name="seo_og_image" type="file" class="border rounded px-3 py-2">
+</div>
 <button class="px-4 py-2 bg-slate-900 text-white rounded">Save</button></form>
 @endsection

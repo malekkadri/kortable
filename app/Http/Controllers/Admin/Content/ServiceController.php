@@ -43,6 +43,13 @@ class ServiceController extends Controller
                 $data[$field] = $request->file($field)->store('services', 'public');
             }
         }
+
+        if ($request->hasFile('seo_og_image')) {
+            $seo = $data['seo'] ?? [];
+            $seo['og_image'] = $request->file('seo_og_image')->store('services/seo', 'public');
+            $data['seo'] = $seo;
+        }
+
         Service::create($data);
 
         return redirect()->route('admin.services.index')->with('status', __('messages.service_created'));
@@ -65,6 +72,16 @@ class ServiceController extends Controller
             unset($data['image']);
         }
 
+        if ($request->hasFile('seo_og_image')) {
+            if (! empty($service->seo['og_image'])) {
+                Storage::disk('public')->delete($service->seo['og_image']);
+            }
+
+            $seo = $data['seo'] ?? $service->seo ?? [];
+            $seo['og_image'] = $request->file('seo_og_image')->store('services/seo', 'public');
+            $data['seo'] = $seo;
+        }
+
         $service->update($data);
 
         return redirect()->route('admin.services.index')->with('status', __('messages.service_updated'));
@@ -74,6 +91,10 @@ class ServiceController extends Controller
     {
         if ($service->image) {
             Storage::disk('public')->delete($service->image);
+        }
+
+        if (! empty($service->seo['og_image'])) {
+            Storage::disk('public')->delete($service->seo['og_image']);
         }
 
         $service->delete();

@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Front;
 use App\Http\Controllers\Controller;
 use App\Models\Project;
 use App\Models\ProjectCategory;
+use App\Models\SiteSetting;
+use App\Support\Seo\SeoData;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class ProjectController extends Controller
@@ -41,14 +44,27 @@ class ProjectController extends Controller
             ->withCount(['projects' => fn ($query) => $query->published()])
             ->get();
 
-        return view('front.projects.index', compact('projects', 'featuredProjects', 'categories', 'categorySlug'));
+        $siteSetting = SiteSetting::query()->first();
+        $seo = SeoData::forContent(
+            [],
+            __('Projects').' | '.($siteSetting?->getLocalized('site_name', $locale) ?? config('app.name')),
+            $siteSetting?->getLocalized('tagline', $locale)
+        );
+        $seo['canonical'] = route('front.projects.index', ['locale' => $locale]);
+
+        return view('front.projects.index', compact('projects', 'featuredProjects', 'categories', 'categorySlug', 'seo'));
     }
 
-    public function show(string $locale, Project $localizedProject): View
+    public function show(string $locale, Project $localizedProject): View|RedirectResponse
     {
         abort_unless($localizedProject->is_published, 404);
 
         $project = $localizedProject->load('category');
+        $localizedSlug = $project->localizedSlug($locale);
+
+        if ((string) request()->route('localizedProject') !== $localizedSlug) {
+            return redirect()->route('front.projects.show', ['locale' => $locale, 'localizedProject' => $localizedSlug], 301);
+        }
 
         $relatedProjects = Project::query()
             ->with('category')
@@ -59,6 +75,14 @@ class ProjectController extends Controller
             ->take(3)
             ->get();
 
-        return view('front.projects.show', compact('project', 'relatedProjects'));
+        $seo = SeoData::forContent(
+            $project->seo ?? [],
+            $project->getTranslated('title', $locale),
+            $project->getTranslated('short_description', $locale),
+            $project->featured_image
+        );
+        $seo['canonical'] = route('front.projects.show', ['locale' => $locale, 'localizedProject' => $localizedSlug]);
+
+        return view('front.projects.show', compact('project', 'relatedProjects', 'seo'));
     }
 }
