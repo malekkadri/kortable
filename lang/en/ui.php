@@ -64,4 +64,17 @@ return [
     'contact_status_read' => 'Read',
     'contact_status_replied' => 'Replied',
     'contact_status_archived' => 'Archived',
+
+    'total_projects' => 'Total projects',
+    'featured_projects' => 'Featured projects',
+    'published_pages' => 'Published pages',
+    'active_services' => 'Active services',
+    'latest_contact_messages' => 'Latest contact messages',
+    'latest_published_projects' => 'Latest published projects',
+    'quick_actions' => 'Quick actions',
+    'new_project' => 'New project',
+    'new_page' => 'New page',
+    'new_service' => 'New service',
+    'recent_activity' => 'Recent activity',
+    'no_subject' => 'No subject',
 ];
