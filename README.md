@@ -1,10 +1,10 @@
 # Kortable
 
-Kortable is a complete **dynamic Laravel portfolio website** with:
+Kortable is a dynamic Laravel portfolio website with:
 
 - Public front office (portfolio, pages, contact).
 - Protected back office (content, settings, users).
-- Full localization in **French (`fr`)**, **Arabic (`ar`)**, and **English (`en`)**.
+- Localization in **French (`fr`)**, **Arabic (`ar`)**, and **English (`en`)**.
 - Language switcher and Arabic RTL rendering.
 
 ---
@@ -13,8 +13,8 @@ Kortable is a complete **dynamic Laravel portfolio website** with:
 
 - Laravel 10
 - PHP 8.2+
-- MySQL / MariaDB (or SQLite for tests)
-- Blade + Tailwind-style utility classes
+- MySQL / MariaDB (SQLite supported for testing)
+- Blade + utility-style CSS
 - Vite for assets
 
 ---
@@ -36,11 +36,22 @@ Kortable is a complete **dynamic Laravel portfolio website** with:
    php artisan key:generate
    ```
 5. Configure database in `.env`.
-6. Run migrations + seeders:
+6. (Optional) Configure local seeded admin credentials in `.env`:
+   ```dotenv
+   DEV_ADMIN_EMAIL=admin@example.test
+   DEV_ADMIN_PASSWORD=change-me-now
+   DEV_EDITOR_EMAIL=editor@example.test
+   DEV_EDITOR_PASSWORD=change-me-now
+   ```
+7. Run migrations + seeders:
    ```bash
    php artisan migrate --seed
    ```
-7. Build frontend assets:
+8. Link storage for public uploads:
+   ```bash
+   php artisan storage:link
+   ```
+9. Build frontend assets:
    ```bash
    npm run build
    ```
@@ -48,27 +59,113 @@ Kortable is a complete **dynamic Laravel portfolio website** with:
    ```bash
    npm run dev
    ```
-8. Start local server:
+10. Start local server:
+    ```bash
+    php artisan serve
+    ```
+
+---
+
+## Environment Configuration Expectations
+
+Use environment-specific values and never commit real credentials.
+
+### Core App
+
+- `APP_ENV=production` in production.
+- `APP_DEBUG=false` in production.
+- Set a valid `APP_KEY` (`php artisan key:generate --force` when bootstrapping environment).
+- Set `APP_URL` to your canonical HTTPS URL.
+
+### Database
+
+- Configure `DB_CONNECTION`, `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`.
+- Run migrations during deployment (`php artisan migrate --force`).
+- Seed only if your release process requires baseline content.
+
+### Mail
+
+- Use `MAIL_MAILER` and provider-neutral SMTP/API settings as needed.
+- Set `MAIL_FROM_ADDRESS` and `MAIL_FROM_NAME`.
+- If mail transport is unavailable, contact submissions are still persisted and app UX remains successful.
+
+### Queues (if used)
+
+- Default connection can remain `sync` for simple deployments.
+- If switching to async workers, configure `QUEUE_CONNECTION` and worker/supervisor on your host.
+- Run failed-job table migration if using background jobs:
+  ```bash
+  php artisan queue:table
+  php artisan migrate --force
+  ```
+
+### Cache & Config Optimization
+
+Run these during production deployment:
+
+```bash
+php artisan optimize
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+```
+
+For rollback/troubleshooting:
+
+```bash
+php artisan optimize:clear
+```
+
+---
+
+## Storage and Asset Handling
+
+- User-uploaded/public files should use the `public` disk and require `php artisan storage:link`.
+- Frontend assets are built with Vite and emitted to `public/build` via `npm run build`.
+- Do not rely on hot-reload/dev server in production.
+- Ensure your web server serves from `/public`.
+
+---
+
+## Deployment Checklist (Provider-Agnostic)
+
+1. Copy code and install runtime dependencies:
    ```bash
-   php artisan serve
+   composer install --no-dev --optimize-autoloader
+   npm ci
+   npm run build
    ```
+2. Configure production `.env` (`APP_ENV`, `APP_DEBUG`, DB, mail, cache/session, queue).
+3. Generate/set `APP_KEY` and set canonical `APP_URL`.
+4. Run database migration safely:
+   ```bash
+   php artisan migrate --force
+   ```
+5. Link storage:
+   ```bash
+   php artisan storage:link
+   ```
+6. Run Laravel optimization commands:
+   ```bash
+   php artisan optimize
+   php artisan config:cache
+   php artisan route:cache
+   php artisan view:cache
+   ```
+7. Restart PHP workers/processes and queue workers if applicable.
+8. Verify health checks, logs, and a full front + admin smoke test.
 
 ---
 
-## Admin Login (Local Dev)
+## Security Notes
 
-Seeded demo accounts:
-
-- Super admin: `admin@kortable.test` / `password`
-- Editor: `editor@kortable.test` / `password`
-
-Admin URL:
-
-- `http://127.0.0.1:8000/admin/login`
+- No fixed development credentials are hard-coded for seeded admin users.
+- Local seeded credentials can be set through `DEV_*` env variables.
+- In production, admin demo-user seeding is skipped unless explicitly enabled.
 
 ---
 
-## Commands to Run the Project Locally
+## Commands to Run Locally
 
 ```bash
 composer install
@@ -76,6 +173,7 @@ npm install
 cp .env.example .env
 php artisan key:generate
 php artisan migrate --seed
+php artisan storage:link
 npm run dev
 php artisan serve
 ```
@@ -85,123 +183,3 @@ Run tests:
 ```bash
 php artisan test
 ```
-
----
-
-## Module Overview
-
-### Front Office
-
-- Localized home page with dynamic sections.
-- Public projects listing and project detail pages.
-- Public CMS pages.
-- Contact form with anti-spam protections.
-- SEO metadata/canonical support and sitemap/robots endpoints.
-
-### Back Office
-
-- Admin authentication.
-- Role/permission based access control.
-- Site settings management.
-- Content management for pages, projects, project categories, services, testimonials, home sections, and menus.
-- Contact message inbox workflow.
-- User management (for roles that can manage users).
-
----
-
-## Localization Overview
-
-- Supported locales: `fr`, `ar`, `en`.
-- Route structure is locale-prefixed for front office (e.g. `/fr/projects`, `/ar/projects`, `/en/projects`).
-- `/language/{locale}` endpoint updates session locale and redirects to localized equivalent URL.
-- Arabic is rendered RTL via locale-aware layout logic.
-- Seeded demo content includes multilingual data in all 3 locales.
-
----
-
-## Demo Data / Seeding Notes
-
-`php artisan migrate --seed` prepares demo-ready data:
-
-- Roles and permissions
-- Admin users
-- Site settings and menus
-- Multilingual pages and home sections
-- Project categories and projects (including unpublished sample)
-- Services and testimonials
-- Contact inbox sample
-
-This allows immediate QA and showcase without manual content entry.
-
----
-
-## Architecture Summary
-
-- **Routing**
-  - `routes/front.php`: localized public routes.
-  - `routes/admin.php`: admin routes with auth/admin/permission gates.
-  - `routes/localization.php`: language switch endpoint.
-- **Middleware**
-  - `SetLocale`: resolves locale from route/session and sets app locale.
-  - `EnsureAdminUser`: restricts admin area to admin users.
-- **Domain models**
-  - Content models store translatable payloads as JSON arrays (`fr/ar/en`).
-  - Project/page slugs support locale-specific variants.
-- **Authorization**
-  - Gate-permission mapping from `config/authz.php`.
-  - Role-permission linkage seeded by `RolePermissionSeeder`.
-
----
-
-## Deployment Notes
-
-- Set production `.env` values (`APP_ENV=production`, secure `APP_KEY`, DB/mail/cache/session config).
-- Run non-interactive deployment commands:
-  ```bash
-  composer install --no-dev --optimize-autoloader
-  php artisan migrate --force
-  php artisan db:seed --class=Database\\Seeders\\DatabaseSeeder --force
-  npm ci && npm run build
-  php artisan optimize
-  ```
-- Configure queue worker and scheduler if background jobs/cron are enabled.
-- Ensure web server points to `/public` and serves HTTPS.
-
----
-
-## Quality Control Coverage
-
-Feature tests now cover critical flows:
-
-- Locale switching behavior.
-- Admin authentication success/failure.
-- Admin access protection and permission gating.
-- Public projects listing/detail across locales.
-- Contact form submission + anti-spam protections.
-- Published vs unpublished project visibility.
-- Seeded multilingual content sanity checks.
-
----
-
-## What Has Been Built vs Optional Future Phases
-
-### Built (Current Phase)
-
-- Complete front + admin structure.
-- Dynamic multilingual content model.
-- Language switcher + RTL handling.
-- Projects showcase and detail flow.
-- Contact workflow with admin inbox.
-- Role/permission protection.
-- Demo-ready seed data and onboarding docs.
-
-### Optional Next Enhancements
-
-1. Media library with upload/crop and reusable assets.
-2. Rich text editor with block components for pages/services.
-3. Project filtering by tags/technology and search.
-4. Audit trail for admin actions.
-5. Draft/publish workflow for all content types.
-6. API endpoints for headless/mobile consumption.
-7. CI pipeline with static analysis + formatting + test matrix.
-8. Localization UX polish (localized menu URLs and translated slugs everywhere).

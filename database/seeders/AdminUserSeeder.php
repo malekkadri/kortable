@@ -6,19 +6,24 @@ use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class AdminUserSeeder extends Seeder
 {
     public function run(): void
     {
+        if (app()->environment('production') && ! filter_var((string) env('ALLOW_DEMO_ADMIN_SEED', 'false'), FILTER_VALIDATE_BOOLEAN)) {
+            return;
+        }
+
         $superAdminRole = Role::where('name', 'super_admin')->first();
         $editorRole = Role::where('name', 'editor')->first();
 
         $admin = User::updateOrCreate(
-            ['email' => 'admin@kortable.test'],
+            ['email' => env('DEV_ADMIN_EMAIL', 'local-admin@invalid.local')],
             [
                 'name' => 'Kortable Super Admin',
-                'password' => Hash::make('password'),
+                'password' => Hash::make(env('DEV_ADMIN_PASSWORD', Str::password(24))),
                 'is_admin' => true,
                 'is_active' => true,
             ]
@@ -29,10 +34,10 @@ class AdminUserSeeder extends Seeder
         }
 
         $editor = User::updateOrCreate(
-            ['email' => 'editor@kortable.test'],
+            ['email' => env('DEV_EDITOR_EMAIL', 'local-editor@invalid.local')],
             [
                 'name' => 'Kortable Editor',
-                'password' => Hash::make('password'),
+                'password' => Hash::make(env('DEV_EDITOR_PASSWORD', Str::password(24))),
                 'is_admin' => true,
                 'is_active' => true,
             ]

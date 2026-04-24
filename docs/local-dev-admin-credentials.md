@@ -1,12 +1,17 @@
 # Local development admin credentials
 
-> For local development only. Do **not** use these credentials in production.
+Use environment variables to define local seeded admin users. Do **not** commit real credentials.
 
-- Super Admin
-  - Email: `admin@kortable.test`
-  - Password: `password`
-- Editor
-  - Email: `editor@kortable.test`
-  - Password: `password`
+Set these in your local `.env` before running `php artisan migrate --seed`:
 
-These users are seeded by `AdminUserSeeder`.
+```dotenv
+DEV_ADMIN_EMAIL=admin@example.test
+DEV_ADMIN_PASSWORD=change-me-now
+DEV_EDITOR_EMAIL=editor@example.test
+DEV_EDITOR_PASSWORD=change-me-now
+```
+
+Notes:
+
+- `AdminUserSeeder` reads the `DEV_*` values and creates/updates users accordingly.
+- In production, this seeder does nothing unless `ALLOW_DEMO_ADMIN_SEED=true` is explicitly set.
