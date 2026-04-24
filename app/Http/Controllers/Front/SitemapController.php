@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
+use App\Models\BlogPost;
 use App\Models\Page;
 use App\Models\Project;
 use App\Support\Localization\Locale;
@@ -18,6 +19,7 @@ class SitemapController extends Controller
         foreach ($locales as $locale) {
             $urls[] = ['loc' => route('front.home', ['locale' => $locale]), 'lastmod' => now()];
             $urls[] = ['loc' => route('front.projects.index', ['locale' => $locale]), 'lastmod' => now()];
+            $urls[] = ['loc' => route('front.blog.index', ['locale' => $locale]), 'lastmod' => now()];
             $urls[] = ['loc' => route('front.contact.show', ['locale' => $locale]), 'lastmod' => now()];
         }
 
@@ -37,6 +39,16 @@ class SitemapController extends Controller
                 $urls[] = [
                     'loc' => route('front.projects.show', ['locale' => $locale, 'localizedProject' => $project->localizedSlug($locale)]),
                     'lastmod' => $project->updated_at ?? $project->created_at,
+                ];
+            }
+        }
+
+        $blogPosts = BlogPost::query()->published()->get();
+        foreach ($blogPosts as $blogPost) {
+            foreach ($locales as $locale) {
+                $urls[] = [
+                    'loc' => route('front.blog.show', ['locale' => $locale, 'localizedBlogPost' => $blogPost->localizedSlug($locale)]),
+                    'lastmod' => $blogPost->updated_at ?? $blogPost->created_at,
                 ];
             }
         }

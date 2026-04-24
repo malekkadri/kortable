@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\Content\StoreMenuRequest;
 use App\Http\Requests\Admin\Content\StoreMenuItemRequest;
 use App\Http\Requests\Admin\Content\UpdateMenuRequest;
 use App\Http\Requests\Admin\Content\UpdateMenuItemRequest;
+use App\Models\BlogCategory;
 use App\Models\Menu;
 use App\Models\MenuItem;
 use App\Models\Page;
@@ -42,12 +43,13 @@ class MenuController extends Controller
 
     public function edit(Menu $menu): View
     {
-        $menu->load(['items.children.page', 'items.page']);
+        $menu->load(['items.children.page', 'items.children.blogCategory', 'items.page', 'items.blogCategory']);
 
         return view('admin.content.menus.form', [
             'menu' => $menu,
             'pages' => Page::published()->get(),
-            'items' => $menu->items()->with(['children.page', 'page'])->whereNull('parent_id')->get(),
+            'blogCategories' => BlogCategory::query()->active()->ordered()->get(),
+            'items' => $menu->items()->with(['children.page', 'children.blogCategory', 'page', 'blogCategory'])->whereNull('parent_id')->get(),
             'flatItems' => $menu->items()->get(),
         ]);
     }

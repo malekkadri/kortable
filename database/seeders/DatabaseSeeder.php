@@ -16,6 +16,8 @@ class DatabaseSeeder extends Seeder
             HomeSectionSeeder::class,
             ProjectCategorySeeder::class,
             ProjectSeeder::class,
+            BlogCategorySeeder::class,
+            BlogPostSeeder::class,
             ServiceSeeder::class,
             TestimonialSeeder::class,
             ContactMessageSeeder::class,

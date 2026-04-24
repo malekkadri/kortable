@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\BlogPost;
 use App\Models\Project;
 use App\Support\Localization\Locale;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -22,6 +23,20 @@ class RouteServiceProvider extends ServiceProvider
 
         RateLimiter::for('contact-form', function (Request $request) {
             return Limit::perMinute(5)->by($request->ip());
+        });
+
+
+        Route::bind('localizedBlogPost', function (string $value, $route) {
+            $locale = $route?->parameter('locale');
+
+            if (! is_string($locale) || ! Locale::isSupported($locale)) {
+                $locale = Locale::fallback();
+            }
+
+            return BlogPost::query()
+                ->where('slug', $value)
+                ->orWhere("slug_translations->{$locale}", $value)
+                ->firstOrFail();
         });
 
         Route::bind('localizedProject', function (string $value, $route) {

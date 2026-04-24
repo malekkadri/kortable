@@ -34,6 +34,11 @@ class MenuSeeder extends Seeder
         );
 
         MenuItem::updateOrCreate(
+            ['menu_id' => $header->id, 'sort_order' => 3],
+            ['label' => ['fr' => 'Blog', 'ar' => 'المدونة', 'en' => 'Blog'], 'type' => 'blog_index', 'is_active' => true]
+        );
+
+        MenuItem::updateOrCreate(
             ['menu_id' => $footer->id, 'sort_order' => 1],
             ['label' => ['fr' => 'À propos', 'ar' => 'من نحن', 'en' => 'About'], 'type' => 'page', 'linked_page_id' => $about?->id, 'is_active' => true]
         );

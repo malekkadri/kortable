@@ -18,6 +18,7 @@ class MenuItem extends Model
         'label',
         'type',
         'linked_page_id',
+        'linked_blog_category_id',
         'custom_url',
         'sort_order',
         'is_active',
@@ -48,12 +49,25 @@ class MenuItem extends Model
         return $this->belongsTo(Page::class, 'linked_page_id');
     }
 
+    public function blogCategory(): BelongsTo
+    {
+        return $this->belongsTo(BlogCategory::class, 'linked_blog_category_id');
+    }
+
     public function resolveUrl(string $locale): ?string
     {
         if ($this->type === 'page' && $this->page) {
             $localizedSlug = $this->page->slug_translations[$locale] ?? $this->page->slug;
 
             return route('front.pages.show', ['locale' => $locale, 'slug' => $localizedSlug]);
+        }
+
+        if ($this->type === 'blog_index') {
+            return route('front.blog.index', ['locale' => $locale]);
+        }
+
+        if ($this->type === 'blog_category' && $this->blogCategory) {
+            return route('front.blog.index', ['locale' => $locale, 'category' => $this->blogCategory->slug]);
         }
 
         if (empty($this->custom_url)) {
@@ -64,5 +78,4 @@ class MenuItem extends Model
             ? $this->custom_url
             : url($this->custom_url);
     }
-
 }

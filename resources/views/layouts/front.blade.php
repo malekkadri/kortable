@@ -6,8 +6,8 @@
     $locale = app()->getLocale();
     $isRtl = Locale::isRtl($locale);
     $siteSetting = SiteSetting::first();
-    $headerMenu = Menu::where('location', 'header')->where('is_active', true)->with(['items' => fn($q) => $q->whereNull('parent_id')->where('is_active', true)->with(['children' => fn ($childQuery) => $childQuery->where('is_active', true), 'page'])])->first();
-    $footerMenu = Menu::where('location', 'footer')->where('is_active', true)->with(['items' => fn($q) => $q->whereNull('parent_id')->where('is_active', true)->with(['children' => fn ($childQuery) => $childQuery->where('is_active', true), 'page'])])->first();
+    $headerMenu = Menu::where('location', 'header')->where('is_active', true)->with(['items' => fn($q) => $q->whereNull('parent_id')->where('is_active', true)->with(['children' => fn ($childQuery) => $childQuery->where('is_active', true)->with(['page', 'blogCategory']), 'page', 'blogCategory'])])->first();
+    $footerMenu = Menu::where('location', 'footer')->where('is_active', true)->with(['items' => fn($q) => $q->whereNull('parent_id')->where('is_active', true)->with(['children' => fn ($childQuery) => $childQuery->where('is_active', true)->with(['page', 'blogCategory']), 'page', 'blogCategory'])])->first();
 @endphp
 
 <!DOCTYPE html>

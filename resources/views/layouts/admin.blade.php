@@ -41,6 +41,8 @@
                     <a class="block px-3 py-2 rounded hover:bg-slate-800" href="{{ route('admin.menus.index') }}">Menus</a>
                     <a class="block px-3 py-2 rounded hover:bg-slate-800" href="{{ route('admin.project-categories.index') }}">Project Categories</a>
                     <a class="block px-3 py-2 rounded hover:bg-slate-800" href="{{ route('admin.projects.index') }}">Projects</a>
+                    <a class="block px-3 py-2 rounded hover:bg-slate-800" href="{{ route('admin.blog-categories.index') }}">Blog Categories</a>
+                    <a class="block px-3 py-2 rounded hover:bg-slate-800" href="{{ route('admin.blog-posts.index') }}">Blog Posts</a>
                 @endcan
             </nav>
         </aside>
