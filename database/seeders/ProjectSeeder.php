@@ -61,6 +61,15 @@ class ProjectSeeder extends Seeder
                 'featured' => false,
                 'sort' => 6,
             ],
+            [
+                'slug' => 'internal-brand-lab',
+                'category' => 'branding',
+                'client' => 'Internal R&D',
+                'date' => '2026-01-12',
+                'featured' => false,
+                'published' => false,
+                'sort' => 7,
+            ],
         ];
 
         foreach ($projects as $item) {
@@ -95,7 +104,7 @@ class ProjectSeeder extends Seeder
                     'gallery' => [],
                     'technologies' => ['Laravel', 'Tailwind CSS', 'MySQL'],
                     'is_featured' => $item['featured'],
-                    'is_published' => true,
+                    'is_published' => $item['published'] ?? true,
                     'sort_order' => $item['sort'],
                     'published_at' => now()->subDays($item['sort'] * 5),
                     'seo' => [

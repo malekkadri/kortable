@@ -4,16 +4,15 @@ namespace Tests\Feature;
 
 use App\Mail\NewContactMessageNotification;
 use App\Models\ContactMessage;
-use App\Models\Permission;
-use App\Models\Role;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
+use Tests\Concerns\CreatesAdminUsers;
 use Tests\TestCase;
 
 class ContactWorkflowTest extends TestCase
 {
     use RefreshDatabase;
+    use CreatesAdminUsers;
 
     public function test_contact_form_submission_persists_message_and_sends_notification(): void
     {
@@ -108,20 +107,5 @@ class ContactWorkflowTest extends TestCase
             'status' => 'replied',
             'notes' => 'Followed up by phone.',
         ]);
-    }
-
-    private function makeAdminUserWithRole(string $roleName, array $permissions): User
-    {
-        $role = Role::factory()->create(['name' => $roleName, 'label' => ucfirst(str_replace('_', ' ', $roleName))]);
-
-        foreach ($permissions as $permission) {
-            $perm = Permission::factory()->create(['name' => $permission, 'label' => ucfirst(str_replace('_', ' ', $permission))]);
-            $role->permissions()->syncWithoutDetaching([$perm->id]);
-        }
-
-        $user = User::factory()->create(['is_admin' => true, 'is_active' => true]);
-        $user->roles()->sync([$role->id]);
-
-        return $user;
     }
 }
