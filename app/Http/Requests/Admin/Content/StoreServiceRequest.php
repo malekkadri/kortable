@@ -24,6 +24,7 @@ class StoreServiceRequest extends FormRequest
 
         foreach (Locale::all() as $locale) {
             $rules["title.$locale"] = ['required', 'string', 'max:255'];
+            $rules["slug_translations.$locale"] = ['nullable', 'string', 'max:255'];
             $rules["short_description.$locale"] = ['nullable', 'string', 'max:500'];
             $rules["description.$locale"] = ['nullable', 'string'];
             $rules["seo.meta_title.$locale"] = ['nullable', 'string', 'max:255'];
@@ -38,13 +39,22 @@ class StoreServiceRequest extends FormRequest
         $slug = Str::slug((string) $this->input('slug'));
         $fallbackLocale = Locale::fallback();
         $title = (array) $this->input('title', []);
+        $slugTranslations = (array) $this->input('slug_translations', []);
 
         if ($slug === '' && ! empty($title[$fallbackLocale])) {
             $slug = Str::slug((string) $title[$fallbackLocale]);
         }
 
-        if ($slug !== '') {
-            $this->merge(['slug' => $slug]);
+        foreach (Locale::all() as $locale) {
+            if (empty($slugTranslations[$locale])) {
+                continue;
+            }
+            $slugTranslations[$locale] = Str::slug((string) $slugTranslations[$locale]);
         }
+
+        $this->merge([
+            'slug' => $slug,
+            'slug_translations' => $slugTranslations,
+        ]);
     }
 }

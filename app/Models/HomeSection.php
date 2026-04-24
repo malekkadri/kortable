@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasTranslatableAttributes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class HomeSection extends Model
 {
     use HasFactory;
+    use HasTranslatableAttributes;
 
     public const TYPE_HERO = 'hero';
     public const TYPE_ABOUT_INTRO = 'about_intro';
@@ -44,15 +46,7 @@ class HomeSection extends Model
 
     public function getLocalized(string $attribute, ?string $locale = null): ?string
     {
-        $locale ??= app()->getLocale();
-        $values = $this->{$attribute} ?? [];
-        $fallback = config('kortable.default_locale', 'en');
-
-        if (! is_array($values)) {
-            return $values;
-        }
-
-        return $values[$locale] ?? $values[$fallback] ?? null;
+        return $this->getTranslated($attribute, $locale ?? app()->getLocale());
     }
 
     public function scopeActive($query)

@@ -11,18 +11,14 @@ use Illuminate\Http\RedirectResponse;
 
 class PageController extends Controller
 {
-    public function show(string $locale, string $slug): View|RedirectResponse
+    public function show(string $locale, Page $localizedPage): View|RedirectResponse
     {
-        $page = Page::published()
-            ->where(function ($query) use ($slug, $locale) {
-                $query->where('slug', $slug)
-                    ->orWhere("slug_translations->{$locale}", $slug);
-            })
-            ->firstOrFail();
+        abort_unless($localizedPage->status === 'published' && $localizedPage->is_active, 404);
 
+        $page = $localizedPage;
         $localizedSlug = $page->localizedSlug($locale);
-        if ($slug !== $localizedSlug) {
-            return redirect()->route('front.pages.show', ['locale' => $locale, 'slug' => $localizedSlug], 301);
+        if ((string) request()->route('localizedPage') !== $localizedSlug) {
+            return redirect()->route('front.pages.show', ['locale' => $locale, 'localizedPage' => $localizedSlug], 301);
         }
 
         $seo = SeoData::forContent(
@@ -31,7 +27,7 @@ class PageController extends Controller
             $page->getLocalized('excerpt', $locale),
             $page->featured_image
         );
-        $seo['canonical'] = route('front.pages.show', ['locale' => $locale, 'slug' => $localizedSlug]);
+        $seo['canonical'] = route('front.pages.show', ['locale' => $locale, 'localizedPage' => $localizedSlug]);
 
         if ($page->slug === 'contact') {
             return view('front.contact', [

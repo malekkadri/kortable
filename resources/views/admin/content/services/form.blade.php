@@ -10,6 +10,7 @@
 </div>
 <input type="file" name="image" class="w-full border rounded px-3 py-2">
 <x-admin.translatable-tabs name="title" label="Title" :values="$service->title ?? []" required />
+<x-admin.translatable-tabs name="slug_translations" label="Localized slugs" :values="$service->slug_translations ?? []" />
 <x-admin.translatable-tabs name="short_description" label="Short description" :values="$service->short_description ?? []" type="textarea" />
 <x-admin.translatable-tabs name="description" label="Description" :values="$service->description ?? []" type="textarea" rows="6" />
 <x-admin.translatable-tabs name="seo.meta_title" label="SEO title" :values="$service->seo['meta_title'] ?? []" />

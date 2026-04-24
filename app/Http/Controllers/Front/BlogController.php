@@ -21,7 +21,7 @@ class BlogController extends Controller
             ->with('category')
             ->published()
             ->when($categorySlug !== '', function ($query) use ($categorySlug) {
-                $query->whereHas('category', fn ($categoryQuery) => $categoryQuery->where('slug', $categorySlug));
+                $query->whereHas('category', fn ($categoryQuery) => $categoryQuery->active()->where('slug', $categorySlug));
             })
             ->ordered()
             ->paginate(9)
@@ -46,7 +46,7 @@ class BlogController extends Controller
 
     public function show(string $locale, BlogPost $localizedBlogPost): View|RedirectResponse
     {
-        abort_unless($localizedBlogPost->is_published, 404);
+        abort_unless($localizedBlogPost->is_published && (! $localizedBlogPost->published_at || $localizedBlogPost->published_at->isPast()), 404);
 
         $blogPost = $localizedBlogPost->load('category');
         $localizedSlug = $blogPost->localizedSlug($locale);

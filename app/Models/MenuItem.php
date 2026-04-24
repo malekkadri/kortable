@@ -57,9 +57,9 @@ class MenuItem extends Model
     public function resolveUrl(string $locale): ?string
     {
         if ($this->type === 'page' && $this->page) {
-            $localizedSlug = $this->page->slug_translations[$locale] ?? $this->page->slug;
+            $localizedSlug = $this->page->localizedSlug($locale);
 
-            return route('front.pages.show', ['locale' => $locale, 'slug' => $localizedSlug]);
+            return route('front.pages.show', ['locale' => $locale, 'localizedPage' => $localizedSlug]);
         }
 
         if ($this->type === 'blog_index') {

@@ -27,7 +27,7 @@ class SitemapController extends Controller
         foreach ($pages as $page) {
             foreach ($locales as $locale) {
                 $urls[] = [
-                    'loc' => route('front.pages.show', ['locale' => $locale, 'slug' => $page->localizedSlug($locale)]),
+                    'loc' => route('front.pages.show', ['locale' => $locale, 'localizedPage' => $page->localizedSlug($locale)]),
                     'lastmod' => $page->updated_at ?? $page->created_at,
                 ];
             }
