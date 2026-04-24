@@ -2,15 +2,14 @@
 
 namespace Tests\Feature;
 
-use App\Models\Permission;
-use App\Models\Role;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Concerns\CreatesAdminUsers;
 use Tests\TestCase;
 
 class AdminAccessTest extends TestCase
 {
     use RefreshDatabase;
+    use CreatesAdminUsers;
 
     public function test_guest_cannot_access_admin_dashboard(): void
     {
@@ -37,20 +36,5 @@ class AdminAccessTest extends TestCase
         $this->actingAs($superAdmin)
             ->get('/admin/users')
             ->assertOk();
-    }
-
-    private function makeAdminUserWithRole(string $roleName, array $permissions): User
-    {
-        $role = Role::factory()->create(['name' => $roleName, 'label' => ucfirst(str_replace('_', ' ', $roleName))]);
-
-        foreach ($permissions as $permission) {
-            $perm = Permission::factory()->create(['name' => $permission, 'label' => ucfirst(str_replace('_', ' ', $permission))]);
-            $role->permissions()->syncWithoutDetaching([$perm->id]);
-        }
-
-        $user = User::factory()->create(['is_admin' => true, 'is_active' => true]);
-        $user->roles()->sync([$role->id]);
-
-        return $user;
     }
 }
