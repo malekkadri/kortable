@@ -11,6 +11,7 @@ use App\Models\SiteSetting;
 use App\Support\Seo\SeoData;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class ContactController extends Controller
@@ -26,7 +27,7 @@ class ContactController extends Controller
 
         $siteSetting = SiteSetting::first();
         $seo = SeoData::forContent(
-            $contactPage->seo ?? [],
+            $contactPage?->seo ?? [],
             $contactPage?->getLocalized('title', $locale) ?? __('Contact'),
             $contactPage?->getLocalized('excerpt', $locale) ?? $siteSetting?->getLocalized('tagline', $locale),
             $contactPage?->featured_image
@@ -47,7 +48,14 @@ class ContactController extends Controller
         $recipient = SiteSetting::query()->value('contact_email') ?: config('mail.from.address');
 
         if ($recipient) {
-            Mail::to($recipient)->send(new NewContactMessageNotification($message, $locale));
+            try {
+                Mail::to($recipient)->send(new NewContactMessageNotification($message, $locale));
+            } catch (\Throwable $exception) {
+                Log::warning('Contact notification email was not sent.', [
+                    'recipient' => $recipient,
+                    'error' => $exception->getMessage(),
+                ]);
+            }
         }
 
         return redirect()
