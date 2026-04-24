@@ -20,10 +20,9 @@ class ProjectController extends Controller
         $projects = Project::query()
             ->with('category')
             ->published()
-            ->when($categorySlug !== '', function ($query) use ($categorySlug, $locale) {
-                $query->whereHas('category', function ($categoryQuery) use ($categorySlug, $locale) {
-                    $categoryQuery->where('slug', $categorySlug)
-                        ->orWhere("name->{$locale}", $categorySlug);
+            ->when($categorySlug !== '', function ($query) use ($categorySlug) {
+                $query->whereHas('category', function ($categoryQuery) use ($categorySlug) {
+                    $categoryQuery->active()->where('slug', $categorySlug);
                 });
             })
             ->ordered()
@@ -57,7 +56,7 @@ class ProjectController extends Controller
 
     public function show(string $locale, Project $localizedProject): View|RedirectResponse
     {
-        abort_unless($localizedProject->is_published, 404);
+        abort_unless($localizedProject->is_published && (! $localizedProject->published_at || $localizedProject->published_at->isPast()), 404);
 
         $project = $localizedProject->load('category');
         $localizedSlug = $project->localizedSlug($locale);

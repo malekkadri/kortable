@@ -19,6 +19,19 @@ Kortable is a dynamic Laravel portfolio website with:
 
 ---
 
+## Architecture Conventions (Normalized)
+
+- **Locales**: supported locales are exactly `fr`, `ar`, `en`; default and fallback locale are `fr`.
+- **Locale routing**: all front-office pages use a locale prefix (`/{locale}/...`), while admin remains non-localized under `/admin`.
+- **RTL**: Arabic (`ar`) renders with `dir="rtl"`; other locales render `ltr`.
+- **Translated content**: translatable entities use JSON fields with shared translation accessors.
+- **Localized slugs**: pages, projects, blog posts, and services support `slug` + `slug_translations` and canonical localized URLs.
+- **Publishing rules**: public listing/detail controllers display published/active content only (including publication date windows where relevant).
+- **Authorization**: admin access uses one coherent native Laravel strategy (middleware + gates/policies backed by roles/permissions tables in-app).
+- **Media strategy**: uploaded media is stored on the `public` disk; records store relative paths; cleanup occurs on replacement/deletion.
+
+---
+
 ## Local Setup
 
 1. Clone the repository.

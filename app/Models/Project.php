@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Models\Concerns\HasTranslatableAttributes;
-use App\Support\Localization\Locale;
+use App\Models\Concerns\HasLocalizedSlug;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Project extends Model
 {
     use HasFactory;
+    use HasLocalizedSlug;
     use HasTranslatableAttributes;
 
     protected $fillable = [
@@ -55,7 +56,10 @@ class Project extends Model
 
     public function scopePublished(Builder $query): Builder
     {
-        return $query->where('is_published', true);
+        return $query->where('is_published', true)
+            ->where(function (Builder $builder) {
+                $builder->whereNull('published_at')->orWhere('published_at', '<=', now());
+            });
     }
 
     public function scopeFeatured(Builder $query): Builder
@@ -66,15 +70,5 @@ class Project extends Model
     public function scopeOrdered(Builder $query): Builder
     {
         return $query->orderBy('sort_order')->orderByDesc('published_at')->orderByDesc('id');
-    }
-
-    public function localizedSlug(?string $locale = null): string
-    {
-        $locale ??= app()->getLocale();
-        $fallback = Locale::fallback();
-
-        return $this->slug_translations[$locale]
-            ?? $this->slug_translations[$fallback]
-            ?? $this->slug;
     }
 }

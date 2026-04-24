@@ -28,7 +28,7 @@ Route::prefix('{locale}')
     ->as('front.')
     ->group(function () {
         Route::get('/', HomeController::class)->name('home');
-        Route::get('/pages/{slug}', [PageController::class, 'show'])->name('pages.show');
+        Route::get('/pages/{localizedPage}', [PageController::class, 'show'])->name('pages.show');
         Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
         Route::get('/projects/{localizedProject}', [ProjectController::class, 'show'])->name('projects.show');
         Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');

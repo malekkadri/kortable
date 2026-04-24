@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Models\Concerns\HasTranslatableAttributes;
-use App\Support\Localization\Locale;
+use App\Models\Concerns\HasLocalizedSlug;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class BlogPost extends Model
 {
     use HasFactory;
+    use HasLocalizedSlug;
     use HasTranslatableAttributes;
 
     protected $fillable = [
@@ -53,15 +54,5 @@ class BlogPost extends Model
     public function scopeOrdered(Builder $query): Builder
     {
         return $query->orderByDesc('published_at')->orderByDesc('id');
-    }
-
-    public function localizedSlug(?string $locale = null): string
-    {
-        $locale ??= app()->getLocale();
-        $fallback = Locale::fallback();
-
-        return $this->slug_translations[$locale]
-            ?? $this->slug_translations[$fallback]
-            ?? $this->slug;
     }
 }

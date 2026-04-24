@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\BlogPost;
+use App\Models\Page;
 use App\Models\Project;
 use App\Support\Localization\Locale;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -34,8 +35,10 @@ class RouteServiceProvider extends ServiceProvider
             }
 
             return BlogPost::query()
-                ->where('slug', $value)
-                ->orWhere("slug_translations->{$locale}", $value)
+                ->where(function ($query) use ($value, $locale) {
+                    $query->where('slug', $value)
+                        ->orWhere("slug_translations->{$locale}", $value);
+                })
                 ->firstOrFail();
         });
 
@@ -47,8 +50,25 @@ class RouteServiceProvider extends ServiceProvider
             }
 
             return Project::query()
-                ->where('slug', $value)
-                ->orWhere("slug_translations->{$locale}", $value)
+                ->where(function ($query) use ($value, $locale) {
+                    $query->where('slug', $value)
+                        ->orWhere("slug_translations->{$locale}", $value);
+                })
+                ->firstOrFail();
+        });
+
+        Route::bind('localizedPage', function (string $value, $route) {
+            $locale = $route?->parameter('locale');
+
+            if (! is_string($locale) || ! Locale::isSupported($locale)) {
+                $locale = Locale::fallback();
+            }
+
+            return Page::query()
+                ->where(function ($query) use ($value, $locale) {
+                    $query->where('slug', $value)
+                        ->orWhere("slug_translations->{$locale}", $value);
+                })
                 ->firstOrFail();
         });
 

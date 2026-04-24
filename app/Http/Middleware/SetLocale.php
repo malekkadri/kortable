@@ -22,7 +22,12 @@ class SetLocale
 
         app()->setLocale($locale);
         $request->session()->put('locale', $locale);
-        URL::defaults(['locale' => $locale]);
+
+        if ($request->routeIs('front.*')) {
+            URL::defaults(['locale' => $locale]);
+        } else {
+            URL::defaults([]);
+        }
 
         return $next($request);
     }

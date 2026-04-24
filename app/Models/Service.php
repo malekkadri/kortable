@@ -2,16 +2,21 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasLocalizedSlug;
+use App\Models\Concerns\HasTranslatableAttributes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Service extends Model
 {
     use HasFactory;
+    use HasLocalizedSlug;
+    use HasTranslatableAttributes;
 
     protected $fillable = [
         'title',
         'slug',
+        'slug_translations',
         'short_description',
         'description',
         'icon',
@@ -23,6 +28,7 @@ class Service extends Model
 
     protected $casts = [
         'title' => 'array',
+        'slug_translations' => 'array',
         'short_description' => 'array',
         'description' => 'array',
         'seo' => 'array',

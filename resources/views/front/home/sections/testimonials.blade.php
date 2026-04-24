@@ -3,7 +3,7 @@
     <div class="grid md:grid-cols-2 gap-4">
         @forelse($testimonials as $testimonial)
             <article class="bg-white border rounded p-4">
-                <p class="text-slate-700">“{{ $testimonial->content[app()->getLocale()] ?? $testimonial->content['en'] ?? '' }}”</p>
+                <p class="text-slate-700">“{{ $testimonial->getTranslated('content') }}”</p>
                 <p class="text-sm mt-2">— {{ $testimonial->author_name }}</p>
             </article>
         @empty

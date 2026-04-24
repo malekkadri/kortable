@@ -36,13 +36,22 @@
                 @can('manage_pages')
                     <a class="block px-3 py-2 rounded hover:bg-slate-800" href="{{ route('admin.pages.index') }}">Pages</a>
                     <a class="block px-3 py-2 rounded hover:bg-slate-800" href="{{ route('admin.home-sections.index') }}">Homepage Sections</a>
-                    <a class="block px-3 py-2 rounded hover:bg-slate-800" href="{{ route('admin.services.index') }}">Services</a>
                     <a class="block px-3 py-2 rounded hover:bg-slate-800" href="{{ route('admin.testimonials.index') }}">Testimonials</a>
-                    <a class="block px-3 py-2 rounded hover:bg-slate-800" href="{{ route('admin.menus.index') }}">Menus</a>
                     <a class="block px-3 py-2 rounded hover:bg-slate-800" href="{{ route('admin.project-categories.index') }}">Project Categories</a>
-                    <a class="block px-3 py-2 rounded hover:bg-slate-800" href="{{ route('admin.projects.index') }}">Projects</a>
                     <a class="block px-3 py-2 rounded hover:bg-slate-800" href="{{ route('admin.blog-categories.index') }}">Blog Categories</a>
                     <a class="block px-3 py-2 rounded hover:bg-slate-800" href="{{ route('admin.blog-posts.index') }}">Blog Posts</a>
+                @endcan
+
+                @can('manage_projects')
+                    <a class="block px-3 py-2 rounded hover:bg-slate-800" href="{{ route('admin.projects.index') }}">Projects</a>
+                @endcan
+
+                @can('manage_services')
+                    <a class="block px-3 py-2 rounded hover:bg-slate-800" href="{{ route('admin.services.index') }}">Services</a>
+                @endcan
+
+                @can('manage_menus')
+                    <a class="block px-3 py-2 rounded hover:bg-slate-800" href="{{ route('admin.menus.index') }}">Menus</a>
                 @endcan
             </nav>
         </aside>
