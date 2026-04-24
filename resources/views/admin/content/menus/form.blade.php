@@ -10,8 +10,14 @@
     <h3 class="font-semibold mb-3">Add menu item</h3>
     <form method="POST" action="{{ route('admin.menus.items.store', $menu) }}" class="space-y-3">@csrf
         <div class="grid md:grid-cols-4 gap-2">
-            <select name="type" class="border rounded px-3 py-2"><option value="page">Internal page</option><option value="custom">Custom URL</option></select>
+            <select name="type" class="border rounded px-3 py-2">
+                <option value="page">Internal page</option>
+                <option value="blog_index">Blog index</option>
+                <option value="blog_category">Blog category</option>
+                <option value="custom">Custom URL</option>
+            </select>
             <select name="linked_page_id" class="border rounded px-3 py-2"><option value="">Select page</option>@foreach($pages as $page)<option value="{{ $page->id }}">{{ $page->title['en'] ?? $page->slug }}</option>@endforeach</select>
+            <select name="linked_blog_category_id" class="border rounded px-3 py-2"><option value="">Select blog category</option>@foreach($blogCategories as $blogCategory)<option value="{{ $blogCategory->id }}">{{ $blogCategory->name['en'] ?? $blogCategory->slug }}</option>@endforeach</select>
             <input name="custom_url" placeholder="https://... or /contact" class="border rounded px-3 py-2">
             <select name="parent_id" class="border rounded px-3 py-2"><option value="">Top level</option>@foreach($flatItems as $item)<option value="{{ $item->id }}">{{ $item->label['en'] ?? 'Item' }}</option>@endforeach</select>
             <input name="sort_order" type="number" value="0" class="border rounded px-3 py-2">
@@ -30,8 +36,14 @@
                 <form method="POST" action="{{ route('admin.menus.items.destroy', [$menu, $item]) }}">@csrf @method('DELETE')<button class="text-red-600 text-sm">Delete</button></form>
             </div>
             <form method="POST" action="{{ route('admin.menus.items.update', [$menu, $item]) }}" class="mt-3 grid md:grid-cols-4 gap-2">@csrf @method('PUT')
-                <select name="type" class="border rounded px-3 py-2"><option value="page" @selected($item->type === 'page')>Internal page</option><option value="custom" @selected($item->type === 'custom')>Custom URL</option></select>
+                <select name="type" class="border rounded px-3 py-2">
+                    <option value="page" @selected($item->type === 'page')>Internal page</option>
+                    <option value="blog_index" @selected($item->type === 'blog_index')>Blog index</option>
+                    <option value="blog_category" @selected($item->type === 'blog_category')>Blog category</option>
+                    <option value="custom" @selected($item->type === 'custom')>Custom URL</option>
+                </select>
                 <select name="linked_page_id" class="border rounded px-3 py-2"><option value="">Select page</option>@foreach($pages as $page)<option value="{{ $page->id }}" @selected($item->linked_page_id === $page->id)>{{ $page->title['en'] ?? $page->slug }}</option>@endforeach</select>
+                <select name="linked_blog_category_id" class="border rounded px-3 py-2"><option value="">Select blog category</option>@foreach($blogCategories as $blogCategory)<option value="{{ $blogCategory->id }}" @selected($item->linked_blog_category_id === $blogCategory->id)>{{ $blogCategory->name['en'] ?? $blogCategory->slug }}</option>@endforeach</select>
                 <input name="custom_url" value="{{ $item->custom_url }}" placeholder="https://... or /contact" class="border rounded px-3 py-2">
                 <select name="parent_id" class="border rounded px-3 py-2"><option value="">Top level</option>@foreach($flatItems->where('id','!=',$item->id) as $candidate)<option value="{{ $candidate->id }}" @selected($item->parent_id === $candidate->id)>{{ $candidate->label['en'] ?? 'Item' }}</option>@endforeach</select>
                 <input name="sort_order" type="number" value="{{ $item->sort_order }}" class="border rounded px-3 py-2">

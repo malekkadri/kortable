@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Admin\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Admin\ContactMessageController;
+use App\Http\Controllers\Admin\Content\BlogCategoryController;
+use App\Http\Controllers\Admin\Content\BlogPostController;
 use App\Http\Controllers\Admin\Content\HomeSectionController;
 use App\Http\Controllers\Admin\Content\MenuController;
 use App\Http\Controllers\Admin\Content\PageController;
@@ -39,6 +41,8 @@ Route::prefix('admin')->as('admin.')->group(function () {
             Route::resource('testimonials', TestimonialController::class)->except('show');
             Route::resource('home-sections', HomeSectionController::class)->except('show');
             Route::resource('project-categories', ProjectCategoryController::class)->except('show');
+            Route::resource('blog-categories', BlogCategoryController::class)->except('show');
+            Route::resource('blog-posts', BlogPostController::class)->except('show');
         });
 
         Route::middleware('can:manage_projects')->group(function () {

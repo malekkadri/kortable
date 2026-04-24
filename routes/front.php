@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Front\BlogController;
 use App\Http\Controllers\Front\ContactController;
 use App\Http\Controllers\Front\HomeController;
 use App\Http\Controllers\Front\PageController;
@@ -30,6 +31,8 @@ Route::prefix('{locale}')
         Route::get('/pages/{slug}', [PageController::class, 'show'])->name('pages.show');
         Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
         Route::get('/projects/{localizedProject}', [ProjectController::class, 'show'])->name('projects.show');
+        Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
+        Route::get('/blog/{localizedBlogPost}', [BlogController::class, 'show'])->name('blog.show');
         Route::get('/contact', [ContactController::class, 'show'])->name('contact.show');
         Route::post('/contact', [ContactController::class, 'store'])->middleware('throttle:contact-form')->name('contact.store');
     });
