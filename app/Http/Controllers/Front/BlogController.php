@@ -51,7 +51,9 @@ class BlogController extends Controller
         $blogPost = $localizedBlogPost->load('category');
         $localizedSlug = $blogPost->localizedSlug($locale);
 
-        if ((string) request()->route('localizedBlogPost') !== $localizedSlug) {
+        $requestedSlug = (string) request()->route()->originalParameter('localizedBlogPost');
+
+        if ($requestedSlug !== $localizedSlug) {
             return redirect()->route('front.blog.show', ['locale' => $locale, 'localizedBlogPost' => $localizedSlug], 301);
         }
 

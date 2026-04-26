@@ -34,7 +34,9 @@ class PageController extends Controller
 
         $page = $localizedPage;
         $localizedSlug = $page->localizedSlug($locale);
-        if ((string) request()->route('localizedPage') !== $localizedSlug) {
+        $requestedSlug = (string) request()->route()->originalParameter('localizedPage');
+
+        if ($requestedSlug !== $localizedSlug) {
             return redirect()->route('front.pages.show', ['locale' => $locale, 'localizedPage' => $localizedSlug], 301);
         }
 
