@@ -8,8 +8,8 @@
             @if ($section->getLocalized('content'))
                 <p class="text-slate-600 mb-5">{{ $section->getLocalized('content') }}</p>
             @endif
-            @if ($section->getLocalized('cta_label') && $section->cta_link)
-                <a href="{{ $section->cta_link }}" class="inline-flex px-4 py-2 bg-slate-900 text-white rounded">
+            @if ($section->getLocalized('cta_label') && $section->localizedCtaLink())
+                <a href="{{ $section->localizedCtaLink() }}" class="inline-flex px-4 py-2 bg-slate-900 text-white rounded">
                     {{ $section->getLocalized('cta_label') }}
                 </a>
             @endif

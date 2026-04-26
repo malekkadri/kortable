@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use App\Models\Concerns\HasTranslatableAttributes;
+use App\Support\Localization\Locale;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class HomeSection extends Model
 {
@@ -52,5 +54,27 @@ class HomeSection extends Model
     public function scopeActive($query)
     {
         return $query->where('is_active', true)->orderBy('sort_order');
+    }
+
+    public function localizedCtaLink(?string $locale = null): ?string
+    {
+        if (! $this->cta_link) {
+            return null;
+        }
+
+        $locale ??= app()->getLocale();
+
+        if (Str::startsWith($this->cta_link, ['http://', 'https://', '#'])) {
+            return $this->cta_link;
+        }
+
+        $path = '/'.ltrim($this->cta_link, '/');
+        $localePattern = implode('|', Locale::all());
+
+        if (! preg_match('#^/('.$localePattern.')(/|$)#', $path)) {
+            $path = '/'.$locale.$path;
+        }
+
+        return $path;
     }
 }

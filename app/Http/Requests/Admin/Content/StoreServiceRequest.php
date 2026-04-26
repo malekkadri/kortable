@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 
 class StoreServiceRequest extends FormRequest
 {
-    public function authorize(): bool { return $this->user()?->can('manage_pages') ?? false; }
+    public function authorize(): bool { return $this->user()?->can('manage_services') ?? false; }
 
     public function rules(): array
     {

@@ -11,6 +11,23 @@ use Illuminate\Http\RedirectResponse;
 
 class PageController extends Controller
 {
+    public function about(string $locale): RedirectResponse
+    {
+        $page = Page::query()
+            ->published()
+            ->where(function ($query) use ($locale) {
+                $query->where('slug', 'about')
+                    ->orWhere("slug_translations->{$locale}", 'about')
+                    ->orWhere("slug_translations->{$locale}", 'a-propos');
+            })
+            ->firstOrFail();
+
+        return redirect()->route('front.pages.show', [
+            'locale' => $locale,
+            'localizedPage' => $page->localizedSlug($locale),
+        ]);
+    }
+
     public function show(string $locale, Page $localizedPage): View|RedirectResponse
     {
         abort_unless($localizedPage->status === 'published' && $localizedPage->is_active, 404);

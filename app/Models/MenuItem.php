@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
+use App\Support\Localization\Locale;
 
 class MenuItem extends Model
 {
@@ -74,8 +75,22 @@ class MenuItem extends Model
             return null;
         }
 
-        return Str::startsWith($this->custom_url, ['http://', 'https://'])
-            ? $this->custom_url
-            : url($this->custom_url);
+        if (Str::startsWith($this->custom_url, '#')) {
+            return $this->custom_url;
+        }
+
+        if (Str::startsWith($this->custom_url, ['http://', 'https://'])) {
+            return $this->custom_url;
+        }
+
+        $path = '/'.ltrim($this->custom_url, '/');
+
+        $localePattern = implode('|', Locale::all());
+
+        if (! preg_match('#^/('.$localePattern.')(/|$)#', $path)) {
+            $path = '/'.$locale.$path;
+        }
+
+        return url($path);
     }
 }

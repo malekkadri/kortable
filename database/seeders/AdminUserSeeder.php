@@ -6,7 +6,6 @@ use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 class AdminUserSeeder extends Seeder
 {
@@ -23,7 +22,7 @@ class AdminUserSeeder extends Seeder
             ['email' => env('DEV_ADMIN_EMAIL', 'local-admin@invalid.local')],
             [
                 'name' => 'Kortable Super Admin',
-                'password' => Hash::make(env('DEV_ADMIN_PASSWORD', Str::password(24))),
+                'password' => Hash::make(env('DEV_ADMIN_PASSWORD', 'Admin@123456')),
                 'is_admin' => true,
                 'is_active' => true,
             ]
@@ -37,7 +36,7 @@ class AdminUserSeeder extends Seeder
             ['email' => env('DEV_EDITOR_EMAIL', 'local-editor@invalid.local')],
             [
                 'name' => 'Kortable Editor',
-                'password' => Hash::make(env('DEV_EDITOR_PASSWORD', Str::password(24))),
+                'password' => Hash::make(env('DEV_EDITOR_PASSWORD', 'Editor@123456')),
                 'is_admin' => true,
                 'is_active' => true,
             ]

@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreMenuRequest extends FormRequest
 {
-    public function authorize(): bool { return $this->user()?->can('manage_pages') ?? false; }
+    public function authorize(): bool { return $this->user()?->can('manage_menus') ?? false; }
 
     public function rules(): array
     {
