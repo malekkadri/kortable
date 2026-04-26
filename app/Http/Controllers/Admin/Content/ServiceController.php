@@ -9,7 +9,7 @@ use App\Models\Service;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use App\Support\Media\MediaManager;
 
 class ServiceController extends Controller
 {
@@ -65,7 +65,7 @@ class ServiceController extends Controller
         $data = $request->validated();
         if ($request->hasFile('image')) {
             if ($service->image) {
-                Storage::disk('public')->delete($service->image);
+                MediaManager::deletePublic($service->image);
             }
             $data['image'] = $request->file('image')->store('services', 'public');
         } else {
@@ -74,7 +74,7 @@ class ServiceController extends Controller
 
         if ($request->hasFile('seo_og_image')) {
             if (! empty($service->seo['og_image'])) {
-                Storage::disk('public')->delete($service->seo['og_image']);
+                MediaManager::deletePublic($service->seo['og_image']);
             }
 
             $seo = $data['seo'] ?? $service->seo ?? [];
@@ -90,11 +90,11 @@ class ServiceController extends Controller
     public function destroy(Service $service): RedirectResponse
     {
         if ($service->image) {
-            Storage::disk('public')->delete($service->image);
+            MediaManager::deletePublic($service->image);
         }
 
         if (! empty($service->seo['og_image'])) {
-            Storage::disk('public')->delete($service->seo['og_image']);
+            MediaManager::deletePublic($service->seo['og_image']);
         }
 
         $service->delete();

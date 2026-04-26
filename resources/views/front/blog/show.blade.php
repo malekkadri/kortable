@@ -2,9 +2,7 @@
 
 @section('content')
 <article class="max-w-4xl mx-auto bg-white border rounded-xl overflow-hidden">
-    @if($blogPost->featured_image)
-        <img src="{{ asset('storage/'.$blogPost->featured_image) }}" alt="{{ $blogPost->getTranslated('title') }}" class="w-full h-72 object-cover">
-    @endif
+    <img src="{{ \App\Support\Media\MediaManager::url($blogPost->featured_image) }}" alt="{{ $blogPost->getTranslated('title') }}" class="w-full h-72 object-cover">
     <div class="p-6 md:p-8">
         <p class="text-sm text-slate-500 mb-2">{{ optional($blogPost->published_at)->format('Y-m-d H:i') }}</p>
         <h1 class="text-3xl font-semibold mb-3">{{ $blogPost->getTranslated('title') }}</h1>

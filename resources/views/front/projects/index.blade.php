@@ -33,9 +33,7 @@
 <section class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
     @forelse($projects as $project)
         <article data-reveal class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:shadow-md">
-            @if($project->featured_image)
-                <img src="{{ asset('storage/' . $project->featured_image) }}" alt="{{ $project->getTranslated('title') }}" class="h-48 w-full object-cover">
-            @endif
+            <img src="{{ \App\Support\Media\MediaManager::url($project->featured_image) }}" alt="{{ $project->getTranslated('title') }}" class="h-48 w-full object-cover">
             <div class="p-5">
                 <h3 class="mb-2 text-lg font-semibold">{{ $project->getTranslated('title') }}</h3>
                 <p class="mb-4 text-sm text-slate-600">{{ $project->getTranslated('short_description') ?: __('ui.no_content_available') }}</p>

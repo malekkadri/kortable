@@ -19,15 +19,9 @@
             </div>
         </div>
 
-        @if ($section->image)
-            <div class="relative">
-                <div class="absolute -inset-4 rounded-3xl bg-sky-400/20 blur-2xl"></div>
-                <img src="{{ asset('storage/'.$section->image) }}" alt="{{ $section->getLocalized('title') }}" class="relative w-full rounded-2xl border border-white/10 object-cover shadow-2xl transition duration-500 hover:scale-[1.02]">
-            </div>
-        @else
-            <div class="rounded-2xl border border-dashed border-white/30 bg-white/5 p-8 text-sm text-slate-300">
-                {{ __('ui.no_content_available') }}
-            </div>
-        @endif
+        <div class="relative">
+            <div class="absolute -inset-4 rounded-3xl bg-sky-400/20 blur-2xl"></div>
+            <img src="{{ \App\Support\Media\MediaManager::url($section->image) }}" alt="{{ $section->getLocalized('title') }}" class="relative w-full rounded-2xl border border-white/10 object-cover shadow-2xl transition duration-500 hover:scale-[1.02]">
+        </div>
     </div>
 </section>

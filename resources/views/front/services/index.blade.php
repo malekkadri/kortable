@@ -9,6 +9,7 @@
 <section class="grid md:grid-cols-3 gap-4">
     @forelse($services as $service)
         <article class="bg-white border rounded-xl p-5">
+            <img src="{{ \App\Support\Media\MediaManager::url($service->image) }}" alt="{{ $service->getTranslated('title') }}" class="mb-3 h-40 w-full rounded-lg object-cover">
             <h2 class="font-semibold text-xl mb-2">{{ $service->getTranslated('title') }}</h2>
             @if($service->getTranslated('short_description'))
                 <p class="text-slate-600 text-sm mb-3">{{ $service->getTranslated('short_description') }}</p>

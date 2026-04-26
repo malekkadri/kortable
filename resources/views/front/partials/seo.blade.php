@@ -25,7 +25,7 @@
 <meta property="og:site_name" content="{{ $seo['site_name'] ?? ($siteSetting?->site_name[$locale] ?? config('app.name')) }}">
 <meta property="og:url" content="{{ $canonical }}">
 @if (! empty($ogImage))
-<meta property="og:image" content="{{ str_starts_with($ogImage, 'http') ? $ogImage : asset('storage/' . $ogImage) }}">
+<meta property="og:image" content="{{ \App\Support\Media\MediaManager::url($ogImage) }}">
 @endif
 <link rel="canonical" href="{{ $canonical }}">
 @foreach ($allLocales as $altLocale)

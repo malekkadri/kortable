@@ -15,9 +15,7 @@
     <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
         @forelse($featuredProjects as $project)
             <article class="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg">
-                @if($project->featured_image)
-                    <img src="{{ asset('storage/' . $project->featured_image) }}" alt="{{ $project->getTranslated('title') }}" class="h-44 w-full object-cover transition duration-500 group-hover:scale-105">
-                @endif
+                <img src="{{ \App\Support\Media\MediaManager::url($project->featured_image) }}" alt="{{ $project->getTranslated('title') }}" class="h-44 w-full object-cover transition duration-500 group-hover:scale-105">
                 <div class="p-5">
                     <p class="mb-2 text-xs uppercase tracking-wide text-slate-500">{{ $project->category?->getTranslated('name') ?: __('Uncategorized') }}</p>
                     <h3 class="mb-2 text-lg font-semibold text-slate-900">{{ $project->getTranslated('title') }}</h3>

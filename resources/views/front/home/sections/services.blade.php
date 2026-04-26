@@ -3,6 +3,7 @@
     <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         @forelse($services as $service)
             <article class="rounded-2xl border border-slate-200 bg-slate-50/70 p-5 transition hover:border-slate-300 hover:bg-white">
+                <img src="{{ \App\Support\Media\MediaManager::url($service->image) }}" alt="{{ $service->getTranslated('title') }}" class="mb-3 h-36 w-full rounded-xl object-cover">
                 <h3 class="mb-2 font-semibold text-slate-900">{{ $service->getTranslated('title') }}</h3>
                 <p class="text-sm text-slate-600">{{ $service->getTranslated('short_description') ?: __('ui.no_content_available') }}</p>
             </article>

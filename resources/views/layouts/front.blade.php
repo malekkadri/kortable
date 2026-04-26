@@ -16,6 +16,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @if($siteSetting?->favicon)
+    <link rel="icon" type="image/x-icon" href="{{ \App\Support\Media\MediaManager::url($siteSetting->favicon, 'images/placeholders/avatar.svg') }}">
+    @endif
     @include('front.partials.seo')
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -30,9 +33,7 @@
         <header class="sticky top-0 z-40 border-b border-slate-200/70 bg-white/90 backdrop-blur">
             <div class="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-3 md:px-6">
                 <a href="{{ route('front.home', ['locale' => $locale]) }}" class="flex items-center gap-3 font-semibold text-slate-900">
-                    @if($siteSetting?->logo)
-                        <img src="{{ asset('storage/'.$siteSetting->logo) }}" class="h-10 w-10 rounded-full border border-slate-200 object-cover" alt="{{ $siteName }} logo">
-                    @endif
+                    <img src="{{ \App\Support\Media\MediaManager::url($siteSetting?->logo, 'images/placeholders/avatar.svg') }}" class="h-10 w-10 rounded-full border border-slate-200 object-cover" alt="{{ $siteName }} logo">
                     <span class="text-base md:text-lg">{{ $siteName }}</span>
                 </a>
 

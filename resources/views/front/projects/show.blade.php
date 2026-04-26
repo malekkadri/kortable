@@ -2,9 +2,7 @@
 
 @section('content')
 <article data-reveal class="mb-10 overflow-hidden rounded-3xl border border-slate-200 bg-white">
-    @if($project->featured_image)
-        <img src="{{ asset('storage/' . $project->featured_image) }}" alt="{{ $project->getTranslated('title') }}" class="h-72 w-full object-cover md:h-96">
-    @endif
+    <img src="{{ \App\Support\Media\MediaManager::url($project->featured_image) }}" alt="{{ $project->getTranslated('title') }}" class="h-72 w-full object-cover md:h-96">
 
     <div class="p-6 md:p-8">
         <p class="mb-2 text-sm text-slate-500">{{ $project->category?->getTranslated('name') ?: __('Uncategorized') }}</p>
@@ -32,7 +30,7 @@
                 <h2 class="mb-3 text-xl font-semibold">{{ __('Gallery') }}</h2>
                 <div class="grid gap-3 md:grid-cols-3">
                     @foreach($project->gallery as $image)
-                        <img src="{{ asset('storage/' . $image) }}" alt="Gallery image" class="h-48 w-full rounded-xl border border-slate-200 object-cover transition hover:opacity-90">
+                        <img src="{{ \App\Support\Media\MediaManager::url($image) }}" alt="Gallery image" class="h-48 w-full rounded-xl border border-slate-200 object-cover transition hover:opacity-90">
                     @endforeach
                 </div>
             </section>
