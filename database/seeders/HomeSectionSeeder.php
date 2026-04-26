@@ -123,7 +123,7 @@ class HomeSectionSeeder extends Seeder
                     'en' => 'Book a quick call and build a homepage that converts.',
                 ],
                 'cta_label' => ['fr' => 'Nous contacter', 'ar' => 'تواصل معنا', 'en' => 'Contact us'],
-                'cta_link' => '/fr/pages/contact',
+                'cta_link' => '/contact',
                 'sort_order' => 60,
                 'is_active' => true,
             ],

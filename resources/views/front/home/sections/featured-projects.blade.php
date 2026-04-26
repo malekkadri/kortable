@@ -7,8 +7,8 @@
             @endif
         </div>
 
-        @if ($section->getLocalized('cta_label') && $section->cta_link)
-            <a href="{{ $section->cta_link }}" class="text-sm px-3 py-2 border rounded">{{ $section->getLocalized('cta_label') }}</a>
+        @if ($section->getLocalized('cta_label') && $section->localizedCtaLink())
+            <a href="{{ $section->localizedCtaLink() }}" class="text-sm px-3 py-2 border rounded">{{ $section->getLocalized('cta_label') }}</a>
         @endif
     </div>
 
@@ -17,6 +17,7 @@
             <article class="bg-white border rounded p-4">
                 <h3 class="font-semibold">{{ $project->getTranslated('title') }}</h3>
                 <p class="text-sm text-slate-600">{{ $project->getTranslated('short_description') }}</p>
+                <a class="text-sm underline mt-2 inline-block" href="{{ route('front.projects.show', ['locale' => app()->getLocale(), 'localizedProject' => $project->localizedSlug()]) }}">{{ __('View project') }}</a>
             </article>
         @empty
             <p class="text-slate-500">{{ __('ui.no_content_available') }}</p>
