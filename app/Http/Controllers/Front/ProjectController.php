@@ -61,7 +61,9 @@ class ProjectController extends Controller
         $project = $localizedProject->load('category');
         $localizedSlug = $project->localizedSlug($locale);
 
-        if ((string) request()->route('localizedProject') !== $localizedSlug) {
+        $requestedSlug = (string) request()->route()->originalParameter('localizedProject');
+
+        if ($requestedSlug !== $localizedSlug) {
             return redirect()->route('front.projects.show', ['locale' => $locale, 'localizedProject' => $localizedSlug], 301);
         }
 
