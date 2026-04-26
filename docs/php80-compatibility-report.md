@@ -1,57 +1,104 @@
-# PHP 8.0 Compatibility Report
+# PHP 8.0.2 / Laravel 9 Compatibility Report
 
-## Baseline inspection
+## Target
 
-- **Original Laravel version (lock file):** `laravel/framework 10.50.2`
-- **Original PHP constraint (composer.json):** `^8.1`
-- **Original direct dependency blockers for PHP 8.0 (from lock):**
-  - `laravel/framework 10.50.2` requires `php ^8.1`
-  - `nunomaduro/collision v7.12.0` requires `php ^8.1.0`
-  - `phpunit/phpunit 10.5.63` requires `php >=8.1`
-  - `spatie/laravel-ignition 2.9.1` requires `php ^8.1`
+- **PHP target:** `^8.0.2`
+- **Laravel target:** `^9.52`
 
-## Target selection
+## 1) Current branch inspection (what was already correct)
 
-- **Chosen target Laravel version:** Laravel **9.x** (`^9.52` in composer.json)
-- **Reason:** PHP 8.0 compatibility can be achieved with PHP **8.0.2+** without the stricter need for exact PHP 8.0.0/8.0.1 support. Therefore, Laravel 9 is the highest compatible and least disruptive target versus dropping further to Laravel 8.
+The branch already contained the primary downgrade intent in `composer.json`:
 
-## Dependency changes made
+- `php` constraint set to `^8.0.2`
+- `laravel/framework` set to `^9.52`
+- Laravel 9-compatible dev package constraints already selected:
+  - `nunomaduro/collision: ^6.1`
+  - `phpunit/phpunit: ^9.5`
+  - `spatie/laravel-ignition: ^1.7`
+- `bootstrap/app.php` is the Laravel 9-style bootstrap (no Laravel 10/11 fluent `Application::configure(...)` bootstrap logic).
+- `app/Http/Kernel.php` uses Laravel 9-compatible `$routeMiddleware` instead of Laravel 10+ middleware alias registration style.
+- `config/app.php` uses explicit array providers/aliases (Laravel 9 compatible).
 
-### composer.json
+## 2) Validation step correction
 
-- PHP constraint changed from `^8.1` to `^8.0.2`
-- Added Composer platform pin: `config.platform.php = 8.0.2` to force dependency resolution for PHP 8.0.2 compatibility
-- `laravel/framework` changed from `^10.10` to `^9.52`
-- `laravel/sanctum` changed from `^3.3` to `^3.2` (Laravel 9-compatible line)
-- `nunomaduro/collision` changed from `^7.0` to `^6.1`
-- `phpunit/phpunit` changed from `^10.1` to `^9.5`
-- `spatie/laravel-ignition` changed from `^2.0` to `^1.7`
+Validation is now done with Composer-native validation (not `php -l composer.json`):
 
-## Application code changes
+- `composer validate`
 
-- Reworked `config/app.php` provider and alias registration to array-based definitions compatible with Laravel 9 (removed Laravel 10 style `defaultProviders()` / `defaultAliases()` usage).
-- Updated HTTP kernel middleware alias registration to Laravel 9-friendly `$routeMiddleware` property.
-- Removed `precognitive` middleware alias registration because Laravel Precognition middleware is not available in Laravel 9.
+Result: command executed successfully as a validator, and correctly reported that the lock file is out of sync with `composer.json`.
 
-## Command execution results
+## 3) Laravel 10-specific audit summary
 
-- `composer update --no-interaction` **failed** due network restriction to Packagist (`CONNECT tunnel failed, response 403`), so lockfile refresh could not be completed in this environment.
-- `php artisan --version` failed because `vendor/autoload.php` is missing (dependencies not installed).
-- `php artisan optimize:clear` failed for the same reason.
-- `php artisan test` failed for the same reason.
+Audited areas:
 
-## Remaining risks / follow-up
+- `composer.json`
+- `composer.lock`
+- `bootstrap/app.php`
+- `config/*.php` (including auth, mail, queue, cache)
+- `app/Http/Kernel.php`
+- exception handling (`app/Exceptions/Handler.php`)
+- route registration (`routes/*.php` and `app/Providers/RouteServiceProvider.php`)
+- auth setup (`config/auth.php`, Sanctum usage)
+- tests + PHPUnit config (`tests/*`, `phpunit.xml`)
+- frontend tooling (`package.json`, `vite.config.js`)
 
-1. Run `composer update` in an environment with Packagist access to regenerate `composer.lock` against the new constraints.
-2. Re-run Laravel sanity checks after dependencies install:
-   - `php artisan --version`
-   - `php artisan optimize:clear`
-   - `php artisan test`
-3. Verify third-party package graph after lock refresh; if any transitive package still raises PHP minimum >8.0.2, pin or replace it.
-4. If production truly requires **exact PHP 8.0.0/8.0.1**, further downgrade to Laravel 8 is required.
+### Fix applied now
 
-## Final intended state
+- **Updated PHPUnit config to Laravel 9 / PHPUnit 9 schema style**:
+  - Replaced `<source>...</source>` block with `<coverage processUncoveredFiles="true">...</coverage>` in `phpunit.xml`.
+  - This removes a Laravel 10 / PHPUnit 10-style test config pattern that can break with `phpunit/phpunit:^9.5`.
 
-- **Final Laravel target:** `^9.52`
-- **Final PHP constraint:** `^8.0.2`
+## 4) Dependency lockfile status
+
+`composer.lock` is currently **outdated** relative to `composer.json`.
+
+Observed locked versions are still Laravel 10-era and incompatible with the current constraints:
+
+- `laravel/framework: 10.50.2`
+- `laravel/sanctum: v3.3.3`
+- `nunomaduro/collision: v7.12.0`
+- `phpunit/phpunit: 10.5.63`
+- `spatie/laravel-ignition: 2.9.1`
+
+Attempting to regenerate lock failed due blocked access to Packagist in this environment (HTTP 403 via CONNECT tunnel).
+
+## 5) Commands executed and actual results
+
+### Required commands
+
+1. `composer validate`
+   - **Result:** failed validation due stale lockfile (expected and informative).
+
+2. `composer update --no-interaction`
+   - **Result:** failed due network restriction to Packagist (`curl error 56`, `CONNECT tunnel failed, response 403`).
+
+3. `php artisan --version`
+   - **Result:** failed because `vendor/autoload.php` is missing (dependencies not installed).
+
+4. `php artisan optimize:clear`
+   - **Result:** failed for the same reason (`vendor/autoload.php` missing).
+
+5. `php artisan test`
+   - **Result:** failed for the same reason (`vendor/autoload.php` missing).
+
+## 6) Verified vs unverified status
+
+### Verified now
+
+- Constraint intent in `composer.json` matches PHP 8.0.2 + Laravel 9.52 target.
+- Core Laravel bootstrap/kernel/config patterns are aligned with Laravel 9.
+- PHPUnit config mismatch was identified and corrected for PHPUnit 9 compatibility.
+
+### Still unverified (blocked)
+
+- Full dependency resolution to a Laravel 9-compatible lockfile.
+- Runtime Artisan command compatibility after vendor install.
+- Actual test suite execution against installed Laravel 9 dependencies.
+
+## 7) Readiness conclusion
+
+This branch is **not yet fully migration-complete** in this environment because dependency installation/update is blocked by external network restrictions.
+
+- **Design/config readiness:** largely aligned with Laravel 9 + PHP 8.0.2.
+- **Execution readiness:** **not proven** until `composer update` succeeds and required Artisan/test commands pass.
 
