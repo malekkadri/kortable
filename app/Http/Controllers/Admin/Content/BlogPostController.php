@@ -10,7 +10,7 @@ use App\Models\BlogPost;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use App\Support\Media\MediaManager;
 
 class BlogPostController extends Controller
 {
@@ -76,7 +76,7 @@ class BlogPostController extends Controller
 
         if ($request->hasFile('featured_image')) {
             if ($blogPost->featured_image) {
-                Storage::disk('public')->delete($blogPost->featured_image);
+                MediaManager::deletePublic($blogPost->featured_image);
             }
 
             $data['featured_image'] = $request->file('featured_image')->store('blog/featured', 'public');
@@ -86,7 +86,7 @@ class BlogPostController extends Controller
 
         if ($request->hasFile('seo_og_image')) {
             if (! empty($blogPost->seo['og_image'])) {
-                Storage::disk('public')->delete($blogPost->seo['og_image']);
+                MediaManager::deletePublic($blogPost->seo['og_image']);
             }
 
             $seo = $data['seo'] ?? $blogPost->seo ?? [];
@@ -102,11 +102,11 @@ class BlogPostController extends Controller
     public function destroy(BlogPost $blogPost): RedirectResponse
     {
         if ($blogPost->featured_image) {
-            Storage::disk('public')->delete($blogPost->featured_image);
+            MediaManager::deletePublic($blogPost->featured_image);
         }
 
         if (! empty($blogPost->seo['og_image'])) {
-            Storage::disk('public')->delete($blogPost->seo['og_image']);
+            MediaManager::deletePublic($blogPost->seo['og_image']);
         }
 
         $blogPost->delete();

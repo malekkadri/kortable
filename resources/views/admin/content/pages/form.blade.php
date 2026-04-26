@@ -12,6 +12,7 @@
 <input name="template" value="{{ old('template',$page->template ?? 'default') }}" class="border rounded px-3 py-2" placeholder="template">
 <input name="sort_order" type="number" value="{{ old('sort_order',$page->sort_order ?? 0) }}" class="border rounded px-3 py-2" placeholder="order">
 <input name="featured_image" type="file" class="border rounded px-3 py-2">
+<img src="{{ \App\Support\Media\MediaManager::url($page->featured_image) }}" alt="Featured image preview" class="h-16 w-24 rounded object-cover border">
 </div>
 <x-admin.translatable-tabs name="title" label="Title" :values="$page->title ?? []" required />
 <x-admin.translatable-tabs name="slug_translations" label="Slug translations" :values="$page->slug_translations ?? []" />

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Concerns\HasTranslatableAttributes;
 use App\Models\Concerns\HasLocalizedSlug;
+use App\Models\Concerns\NormalizesMediaPaths;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,6 +15,7 @@ class Project extends Model
     use HasFactory;
     use HasLocalizedSlug;
     use HasTranslatableAttributes;
+    use NormalizesMediaPaths;
 
     protected $fillable = [
         'category_id',
@@ -70,5 +72,24 @@ class Project extends Model
     public function scopeOrdered(Builder $query): Builder
     {
         return $query->orderBy('sort_order')->orderByDesc('published_at')->orderByDesc('id');
+    }
+
+    public function setFeaturedImageAttribute(?string $value): void
+    {
+        $this->attributes['featured_image'] = $this->normalizeMediaPath($value);
+    }
+
+    public function setGalleryAttribute(?array $value): void
+    {
+        $this->attributes['gallery'] = json_encode($this->normalizeMediaArray($value));
+    }
+
+    public function setSeoAttribute(?array $value): void
+    {
+        if (is_array($value) && isset($value['og_image'])) {
+            $value['og_image'] = $this->normalizeMediaPath($value['og_image']);
+        }
+
+        $this->attributes['seo'] = json_encode($value ?? []);
     }
 }

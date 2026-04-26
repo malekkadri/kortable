@@ -9,7 +9,7 @@ use App\Models\Page;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use App\Support\Media\MediaManager;
 
 class PageController extends Controller
 {
@@ -64,7 +64,7 @@ class PageController extends Controller
 
         if ($request->hasFile('featured_image')) {
             if ($page->featured_image) {
-                Storage::disk('public')->delete($page->featured_image);
+                MediaManager::deletePublic($page->featured_image);
             }
             $data['featured_image'] = $request->file('featured_image')->store('pages', 'public');
         } else {
@@ -73,7 +73,7 @@ class PageController extends Controller
 
         if ($request->hasFile('seo_og_image')) {
             if (! empty($page->seo['og_image'])) {
-                Storage::disk('public')->delete($page->seo['og_image']);
+                MediaManager::deletePublic($page->seo['og_image']);
             }
             $seo = $data['seo'] ?? $page->seo ?? [];
             $seo['og_image'] = $request->file('seo_og_image')->store('pages/seo', 'public');
@@ -88,11 +88,11 @@ class PageController extends Controller
     public function destroy(Page $page): RedirectResponse
     {
         if ($page->featured_image) {
-            Storage::disk('public')->delete($page->featured_image);
+            MediaManager::deletePublic($page->featured_image);
         }
 
         if (! empty($page->seo['og_image'])) {
-            Storage::disk('public')->delete($page->seo['og_image']);
+            MediaManager::deletePublic($page->seo['og_image']);
         }
 
         $page->delete();

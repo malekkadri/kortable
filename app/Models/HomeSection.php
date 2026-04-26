@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Concerns\HasTranslatableAttributes;
+use App\Models\Concerns\NormalizesMediaPaths;
 use App\Support\Localization\Locale;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,6 +13,7 @@ class HomeSection extends Model
 {
     use HasFactory;
     use HasTranslatableAttributes;
+    use NormalizesMediaPaths;
 
     public const TYPE_HERO = 'hero';
     public const TYPE_ABOUT_INTRO = 'about_intro';
@@ -76,5 +78,10 @@ class HomeSection extends Model
         }
 
         return $path;
+    }
+
+    public function setImageAttribute(?string $value): void
+    {
+        $this->attributes['image'] = $this->normalizeMediaPath($value);
     }
 }

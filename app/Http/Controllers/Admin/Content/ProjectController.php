@@ -10,8 +10,8 @@ use App\Models\ProjectCategory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use App\Support\Media\MediaManager;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Storage;
 
 class ProjectController extends Controller
 {
@@ -89,7 +89,7 @@ class ProjectController extends Controller
 
         if ($request->hasFile('featured_image')) {
             if ($project->featured_image) {
-                Storage::disk('public')->delete($project->featured_image);
+                MediaManager::deletePublic($project->featured_image);
             }
             $data['featured_image'] = $request->file('featured_image')->store('projects/featured', 'public');
         } else {
@@ -98,7 +98,7 @@ class ProjectController extends Controller
 
         if ($request->hasFile('seo_og_image')) {
             if (! empty($project->seo['og_image'])) {
-                Storage::disk('public')->delete($project->seo['og_image']);
+                MediaManager::deletePublic($project->seo['og_image']);
             }
             $seo = $data['seo'] ?? $project->seo ?? [];
             $seo['og_image'] = $request->file('seo_og_image')->store('projects/seo', 'public');
@@ -115,15 +115,15 @@ class ProjectController extends Controller
     public function destroy(Project $project): RedirectResponse
     {
         if ($project->featured_image) {
-            Storage::disk('public')->delete($project->featured_image);
+            MediaManager::deletePublic($project->featured_image);
         }
 
         foreach ($project->gallery ?? [] as $path) {
-            Storage::disk('public')->delete($path);
+            MediaManager::deletePublic($path);
         }
 
         if (! empty($project->seo['og_image'])) {
-            Storage::disk('public')->delete($project->seo['og_image']);
+            MediaManager::deletePublic($project->seo['og_image']);
         }
 
         $project->delete();
@@ -153,7 +153,7 @@ class ProjectController extends Controller
 
         $deleted = array_values(array_diff($existingGallery, $kept));
         foreach ($deleted as $path) {
-            Storage::disk('public')->delete($path);
+            MediaManager::deletePublic($path);
         }
 
         $uploads = [];

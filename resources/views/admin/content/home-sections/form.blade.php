@@ -59,6 +59,7 @@
     <div>
         <label class="block text-sm font-medium mb-1">Image</label>
         <input type="file" name="image" class="w-full border rounded px-3 py-2">
+<img src="{{ \App\Support\Media\MediaManager::url($section->image) }}" alt="Section image preview" class="mt-2 h-20 w-32 rounded object-cover border">
         @if ($section->image)
             <p class="text-xs text-slate-500 mt-1">Current: {{ $section->image }}</p>
         @endif

@@ -18,9 +18,7 @@
         <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-5">
             @forelse($blogPosts as $post)
                 <article class="bg-white border rounded-xl overflow-hidden">
-                    @if($post->featured_image)
-                        <img src="{{ asset('storage/'.$post->featured_image) }}" alt="{{ $post->getTranslated('title') }}" class="w-full h-40 object-cover">
-                    @endif
+                    <img src="{{ \App\Support\Media\MediaManager::url($post->featured_image) }}" alt="{{ $post->getTranslated('title') }}" class="w-full h-40 object-cover">
                     <div class="p-4">
                         <p class="text-xs text-slate-500 mb-2">{{ optional($post->published_at)->format('Y-m-d') }}</p>
                         <h2 class="text-lg font-semibold mb-2">{{ $post->getTranslated('title') }}</h2>

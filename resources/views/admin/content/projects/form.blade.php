@@ -37,6 +37,7 @@
 
     <div class="grid md:grid-cols-2 gap-3">
         <input type="file" name="featured_image" class="w-full border rounded px-3 py-2">
+<img src="{{ \App\Support\Media\MediaManager::url($project->featured_image) }}" alt="Featured image preview" class="h-20 w-32 rounded object-cover border">
         <input type="file" name="gallery_uploads[]" multiple class="w-full border rounded px-3 py-2">
     </div>
 

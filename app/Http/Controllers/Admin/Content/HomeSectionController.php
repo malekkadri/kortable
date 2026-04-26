@@ -9,7 +9,7 @@ use App\Models\HomeSection;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use App\Support\Media\MediaManager;
 
 class HomeSectionController extends Controller
 {
@@ -69,7 +69,7 @@ class HomeSectionController extends Controller
 
         if ($request->hasFile('image')) {
             if ($homeSection->image) {
-                Storage::disk('public')->delete($homeSection->image);
+                MediaManager::deletePublic($homeSection->image);
             }
             $data['image'] = $request->file('image')->store('home-sections', 'public');
         } else {
@@ -84,7 +84,7 @@ class HomeSectionController extends Controller
     public function destroy(HomeSection $homeSection): RedirectResponse
     {
         if ($homeSection->image) {
-            Storage::disk('public')->delete($homeSection->image);
+            MediaManager::deletePublic($homeSection->image);
         }
 
         $homeSection->delete();

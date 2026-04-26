@@ -7,7 +7,7 @@ use App\Http\Requests\Admin\Content\UpdateSiteSettingRequest;
 use App\Models\SiteSetting;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Storage;
+use App\Support\Media\MediaManager;
 
 class SiteSettingController extends Controller
 {
@@ -27,7 +27,7 @@ class SiteSettingController extends Controller
         foreach (['logo', 'favicon'] as $imageField) {
             if ($request->hasFile($imageField)) {
                 if ($setting->{$imageField}) {
-                    Storage::disk('public')->delete($setting->{$imageField});
+                    MediaManager::deletePublic($setting->{$imageField});
                 }
                 $data[$imageField] = $request->file($imageField)->store('site-settings', 'public');
             } else {

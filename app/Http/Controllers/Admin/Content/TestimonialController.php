@@ -9,7 +9,7 @@ use App\Models\Testimonial;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use App\Support\Media\MediaManager;
 
 class TestimonialController extends Controller
 {
@@ -52,7 +52,7 @@ class TestimonialController extends Controller
         $data = $request->validated();
         if ($request->hasFile('avatar')) {
             if ($testimonial->avatar) {
-                Storage::disk('public')->delete($testimonial->avatar);
+                MediaManager::deletePublic($testimonial->avatar);
             }
             $data['avatar'] = $request->file('avatar')->store('testimonials', 'public');
         } else {
@@ -67,7 +67,7 @@ class TestimonialController extends Controller
     public function destroy(Testimonial $testimonial): RedirectResponse
     {
         if ($testimonial->avatar) {
-            Storage::disk('public')->delete($testimonial->avatar);
+            MediaManager::deletePublic($testimonial->avatar);
         }
 
         $testimonial->delete();
